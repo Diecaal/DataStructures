@@ -11,18 +11,26 @@ public class TestBench {
 	public static final int SLEEP_TIME = 2;
 
 	public static void main(String[] args) {
-		TestBench.testAlgorithm("algorithms.Algorithms", "linear", "linear.txt", 3, 1, 50);
-		TestBench.testAlgorithm("algorithms.Algorithms", "quadratic", "quadratic.txt", 3, 1, 50);
-		TestBench.testAlgorithm("algorithms.Algorithms", "cubic", "cubic.txt", 3, 1, 20);
-		TestBench.testAlgorithm("algorithms.Algorithms", "logarithmic", "logarithmic.txt", 3, 1, 50);
+		TestBench.testAlgorithm("algorithms.Algorithms", "files/linear", "linear.txt", 3, 1, 50);
+		TestBench.testAlgorithm("algorithms.Algorithms", "files/quadratic", "quadratic.txt", 3, 1, 50);
+		TestBench.testAlgorithm("algorithms.Algorithms", "files/cubic", "cubic.txt", 3, 1, 20);
+		TestBench.testAlgorithm("algorithms.Algorithms", "files/logarithmic", "logarithmic.txt", 3, 1, 50);
 	}
 
+	/**
+	 * Performs an already decided algorithm for a given workload and examples
+	 * 
+	 * @param outputFileName file to output the results
+	 * @param samples        number of times to perform the experiment
+	 * @param startN         maximum n workload
+	 * @param endN           minimum n workload
+	 */
 	public static void test(String outputFileName, int samples, int startN, int endN) {
 		List<Long> executions = new ArrayList<>();
 		for (int i = startN; i <= endN; i++) {
 			long start = System.currentTimeMillis();
 			for (int currentSample = 0; currentSample < samples; currentSample++) {
-				//TestBench.testAlgorithm("Algorithms", "linear", i);
+				// TestBench.testAlgorithm("Algorithms", "linear", i);
 			}
 			long end = System.currentTimeMillis();
 			executions.add(end - start);
@@ -61,8 +69,13 @@ public class TestBench {
 		}
 	}
 
+	/**
+	 * Prevents more code from being executed during SLEEP_TIME constant value
+	 * 
+	 * @param i time to be added to current time to stop execution
+	 */
 	public static void doNothing(int i) {
-		//System.out.println(String.format("Doing nothing at iteration: %s", i));
+		// System.out.println(String.format("Doing nothing at iteration: %s", i));
 		long endTime = System.currentTimeMillis() + SLEEP_TIME;
 		while (System.currentTimeMillis() < endTime) {
 			// Do nothing
@@ -70,6 +83,12 @@ public class TestBench {
 		}
 	}
 
+	/**
+	 * Write a list of given execution times to an output file
+	 * 
+	 * @param fileName   output file name
+	 * @param executions list containing the execution times
+	 */
 	public static void writeResults(String fileName, List<Long> executions) {
 		FileWriter file = null;
 		PrintWriter pw = null;

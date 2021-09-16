@@ -8,13 +8,10 @@ public class Algorithms {
 	 * @param n Long - algorithm workload
 	 */
 	public static void linear(int n) {
-		long start = System.currentTimeMillis();
 		for (int i = 0; i <= n; i++) {
-			// Slow down each iteration 25 milliseconds
+			// Slow down each iteration some milliseconds
 			TestBench.doNothing(i);
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(String.format("Execution time: %s miliseconds", end - start));
 	}
 
 	/**
@@ -23,15 +20,12 @@ public class Algorithms {
 	 * @param n Long - algorithm workload
 	 */
 	public static void quadratic(int n) {
-		long start = System.currentTimeMillis();
 		for (int i = 0; i <= n; i++) {
 			for (int j = 0; j <= n; j++) {
-				// Slow down each iteration 25 milliseconds
+				// Slow down each iteration some milliseconds
 				TestBench.doNothing(i);
 			}
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(String.format("Execution time: %s miliseconds", end - start));
 	}
 
 	/**
@@ -40,17 +34,14 @@ public class Algorithms {
 	 * @param n Long - algorithm workload
 	 */
 	public static void cubic(int n) {
-		long start = System.currentTimeMillis();
 		for (int i = 0; i <= n; i++) {
 			for (int j = 0; j <= n; j++) {
 				for (int k = 0; k <= n; k++) {
-					// Slow down each iteration 25 milliseconds
+					// Slow down each iteration some milliseconds
 					TestBench.doNothing(i);
 				}
 			}
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(String.format("Execution time: %s miliseconds", end - start));
 	}
 
 	/**
@@ -59,12 +50,10 @@ public class Algorithms {
 	 * @param n Long - algorithm workload
 	 */
 	public static void logarithmic(int n) {
-		long start = System.currentTimeMillis();
 		while (n > 0) {
+			// Slow down each iteration some milliseconds
 			TestBench.doNothing(n);
 			n /= 2;
 		}
-		long end = System.currentTimeMillis();
-		System.out.println(String.format("Execution time: %s miliseconds", end - start));
 	}
 }
