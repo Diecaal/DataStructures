@@ -11,10 +11,11 @@ public class TestBench {
 	public static final int SLEEP_TIME = 2;
 
 	public static void main(String[] args) {
-		TestBench.testAlgorithm("algorithms.Algorithms", "files/linear", "linear.txt", 3, 1, 50);
-		TestBench.testAlgorithm("algorithms.Algorithms", "files/quadratic", "quadratic.txt", 3, 1, 50);
-		TestBench.testAlgorithm("algorithms.Algorithms", "files/cubic", "cubic.txt", 3, 1, 20);
-		TestBench.testAlgorithm("algorithms.Algorithms", "files/logarithmic", "logarithmic.txt", 3, 1, 50);
+		//TestBench.testAlgorithm("algorithms.Algorithms", "files/linear", "linear.txt", 3, 1, 50);
+		//TestBench.testAlgorithm("algorithms.Algorithms", "files/quadratic", "quadratic.txt", 3, 1, 50);
+		//TestBench.testAlgorithm("algorithms.Algorithms", "files/cubic", "cubic.txt", 3, 1, 20);
+		//TestBench.testAlgorithm("algorithms.Algorithms", "files/logarithmic", "logarithmic.txt", 3, 1, 50);
+		System.out.println(Algorithms.factorial(6));
 	}
 
 	/**
@@ -53,14 +54,15 @@ public class TestBench {
 			Object classObject = classDetected.newInstance();
 			Method classMethod = classObject.getClass().getMethod(methodName, int.class);
 			List<Long> executions = new ArrayList<>();
+			// Workload N control
 			for (int i = startN; i <= endN; i++) {
 				long start = System.currentTimeMillis();
+				// Samples control
 				for (int currentSample = 0; currentSample < samples; currentSample++) {
 					classMethod.invoke(classObject, i);
-					System.out.println(methodName);
 				}
 				long end = System.currentTimeMillis();
-				executions.add(end - start);
+				executions.add((end - start)/samples);
 			}
 			TestBench.writeResults(outputFileName, executions);
 		} catch (Exception e) {
