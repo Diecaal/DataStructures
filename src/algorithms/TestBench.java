@@ -11,11 +11,14 @@ public class TestBench {
 	public static final int SLEEP_TIME = 2;
 
 	public static void main(String[] args) {
-		//TestBench.testAlgorithm("algorithms.Algorithms", "files/linear", "linear.txt", 3, 1, 50);
-		//TestBench.testAlgorithm("algorithms.Algorithms", "files/quadratic", "quadratic.txt", 3, 1, 50);
-		//TestBench.testAlgorithm("algorithms.Algorithms", "files/cubic", "cubic.txt", 3, 1, 20);
-		//TestBench.testAlgorithm("algorithms.Algorithms", "files/logarithmic", "logarithmic.txt", 3, 1, 50);
-		System.out.println(Algorithms.factorial(6));
+		//TestBench.test("algorithms.Algorithms", "linear", "src/algorithms/files/linear.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "quadratic", "src/algorithms/files/quadratic.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "cubic", "src/algorithms/files/cubic.txt", 3, 1, 20);
+		//TestBench.test("algorithms.Algorithms", "logarithmic", "arc/algorithms/files/logarithmic.txt", 3, 1, 50);
+		TestBench.test("algorithms.Algorithms", "powRec1", "src/algorithms/files/powRec1.txt", 3, 1, 12);
+		TestBench.test("algorithms.Algorithms", "powRec2", "src/algorithms/files/powRec2.txt", 3, 1, 50);
+		TestBench.test("algorithms.Algorithms", "powRec3", "src/algorithms/files/powRec3.txt", 3, 1, 50);
+		TestBench.test("algorithms.Algorithms", "powRec4", "src/algorithms/files/powRec4.txt", 3, 1, 50);
 	}
 
 	/**
@@ -26,15 +29,17 @@ public class TestBench {
 	 * @param startN         maximum n workload
 	 * @param endN           minimum n workload
 	 */
-	public static void test(String outputFileName, int samples, int startN, int endN) {
+	public static void test(String className, String methodName, String outputFileName, int samples, int startN,
+			int endN) {
 		List<Long> executions = new ArrayList<>();
 		for (int i = startN; i <= endN; i++) {
 			long start = System.currentTimeMillis();
-			for (int currentSample = 0; currentSample < samples; currentSample++) {
-				// TestBench.testAlgorithm("Algorithms", "linear", i);
-			}
+
+			for (int currentSample = 0; currentSample < samples; currentSample++)
+				TestBench.testAlgorithm(className, methodName, i);
+
 			long end = System.currentTimeMillis();
-			executions.add(end - start);
+			executions.add((end - start) / samples);
 		}
 		TestBench.writeResults(outputFileName, executions);
 	}
@@ -47,24 +52,15 @@ public class TestBench {
 	 * @param methodName to be executed
 	 * @param n          workload to the method
 	 */
-	public static void testAlgorithm(String className, String methodName, String outputFileName, int samples,
-			int startN, int endN) {
+	public static void testAlgorithm(String className, String methodName, int i) {
 		try {
 			Class<?> classDetected = Class.forName(className);
 			Object classObject = classDetected.newInstance();
-			Method classMethod = classObject.getClass().getMethod(methodName, int.class);
-			List<Long> executions = new ArrayList<>();
-			// Workload N control
-			for (int i = startN; i <= endN; i++) {
-				long start = System.currentTimeMillis();
-				// Samples control
-				for (int currentSample = 0; currentSample < samples; currentSample++) {
-					classMethod.invoke(classObject, i);
-				}
-				long end = System.currentTimeMillis();
-				executions.add((end - start)/samples);
-			}
-			TestBench.writeResults(outputFileName, executions);
+			// First algorithms
+			//Method classMethod = classObject.getClass().getMethod(methodName, int.class);
+			// Recursive pow algorithms
+			Method classMethod = classObject.getClass().getMethod(methodName, long.class);
+			classMethod.invoke(classObject, i);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Either class name or method name given is not valid");

@@ -57,6 +57,11 @@ public class Algorithms {
 		}
 	}
 	
+	/**
+	 * Iterative method to calculate the factorial of a number - O(n)
+	 * @param n workload - number to calculate its factorial
+	 * @return long factorial of workload
+	 */
 	public static long factorial(long n) {
 		long result = 1;
 		while(n > 0) {
@@ -66,13 +71,23 @@ public class Algorithms {
 		return result;
 	}
 
-	public static long factorialRec(int n) {
+	/**
+	 * Recursive method to calculate the factorial of a number - O(n)
+	 * @param n workload - number to calculate its factorial
+	 * @return long factorial of workload
+	 */
+	public static long factorialRec(long n) {
 		if(n==0||n==1) 
 			return 1;
 		else
 			return n * factorialRec(n-1);
 	}
 	
+	/**
+	 * Iterative method to get the power of a number n - O(n)
+	 * @param n workload - number to calculate its power 
+	 * @return long power of workload
+	 */
 	public static long pow(long n) {
 		if(n==0) 
 			return 1;
@@ -84,11 +99,10 @@ public class Algorithms {
 		return result;
 	}
 	
-	// Exponential algorithm; 2^n = approximate number of calls we're doing
 	/**
 	 * Power function recursive version of O(2^n)
-	 * @param n
-	 * @return
+	 * @param n workload - number to calculate its power 
+	 * @return long power of workload
 	 */
 	public static long powRec1(long n) {
 		if(n==0)
@@ -99,8 +113,8 @@ public class Algorithms {
 	
 	/**
 	 * Power function recursive version of O(n)
-	 * @param n
-	 * @return
+	 * @param n workload - number to calculate its power 
+	 * @return long power of workload
 	 */
 	public static long powRec2(long n) {
 		if(n==0)
@@ -111,8 +125,8 @@ public class Algorithms {
 	
 	/**
 	 * Power function recursive version of O(n)
-	 * @param n
-	 * @return
+	 * @param n workload - number to calculate its power 
+	 * @return long power of workload
 	 */
 	public static long powRec3(long n) {
 		if(n==0)
@@ -127,8 +141,8 @@ public class Algorithms {
 	
 	/**
 	 * Power function recursive version of O(log n)
-	 * @param n
-	 * @return
+	 * @param n workload - number to calculate its power 
+	 * @return long power of workload
 	 */
 	public static long powRec4(long n) {
 		if(n==0)
