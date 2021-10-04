@@ -14,13 +14,13 @@ public class TestBench {
 		//TestBench.test("algorithms.Algorithms", "linear", "src/algorithms/files/linear.txt", 3, 1, 50);
 		//TestBench.test("algorithms.Algorithms", "quadratic", "src/algorithms/files/quadratic.txt", 3, 1, 50);
 		//TestBench.test("algorithms.Algorithms", "cubic", "src/algorithms/files/cubic.txt", 3, 1, 20);
-		//TestBench.test("algorithms.Algorithms", "logarithmic", "arc/algorithms/files/logarithmic.txt", 3, 1, 50);
-		TestBench.test("algorithms.Algorithms", "powRec1", "src/algorithms/files/powRec1.txt", 3, 1, 12);
-		TestBench.test("algorithms.Algorithms", "powRec2", "src/algorithms/files/powRec2.txt", 3, 1, 50);
-		TestBench.test("algorithms.Algorithms", "powRec3", "src/algorithms/files/powRec3.txt", 3, 1, 50);
-		TestBench.test("algorithms.Algorithms", "powRec4", "src/algorithms/files/powRec4.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "logarithmic", "src/algorithms/files/logarithmic.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "powRec1", "src/algorithms/files/powRec1.txt", 3, 1, 12);
+		//TestBench.test("algorithms.Algorithms", "powRec2", "src/algorithms/files/powRec2.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "powRec3", "src/algorithms/files/powRec3.txt", 3, 1, 50);
+		//TestBench.test("algorithms.Algorithms", "powRec4", "src/algorithms/files/powRec4.txt", 3, 1, 50);
 	}
-
+	
 	/**
 	 * Performs an already decided algorithm for a given workload and examples
 	 * 
@@ -39,7 +39,7 @@ public class TestBench {
 				TestBench.testAlgorithm(className, methodName, i);
 
 			long end = System.currentTimeMillis();
-			executions.add((end - start) / samples);
+			executions.add((end-start)/samples);
 		}
 		TestBench.writeResults(outputFileName, executions);
 	}
@@ -55,12 +55,11 @@ public class TestBench {
 	public static void testAlgorithm(String className, String methodName, int i) {
 		try {
 			Class<?> classDetected = Class.forName(className);
-			Object classObject = classDetected.newInstance();
 			// First algorithms
-			//Method classMethod = classObject.getClass().getMethod(methodName, int.class);
+			Method classMethod = classDetected.getDeclaredMethod(methodName, int.class);
 			// Recursive pow algorithms
-			Method classMethod = classObject.getClass().getMethod(methodName, long.class);
-			classMethod.invoke(classObject, i);
+			//Method classMethod = classDetected.getDeclaredMethod(methodName, long.class);
+			classMethod.invoke(classDetected, i);			
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Either class name or method name given is not valid");
@@ -72,7 +71,7 @@ public class TestBench {
 	 * 
 	 * @param i time to be added to current time to stop execution
 	 */
-	public static void doNothing(int i) {
+	public static void doNothing(long i) {
 		// System.out.println(String.format("Doing nothing at iteration: %s", i));
 		long endTime = System.currentTimeMillis() + SLEEP_TIME;
 		while (System.currentTimeMillis() < endTime) {

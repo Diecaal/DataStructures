@@ -89,6 +89,7 @@ public class Algorithms {
 	 * @return long power of workload
 	 */
 	public static long pow(long n) {
+		TestBench.doNothing(n);
 		if(n==0) 
 			return 1;
 		long result = 2;
@@ -105,6 +106,7 @@ public class Algorithms {
 	 * @return long power of workload
 	 */
 	public static long powRec1(long n) {
+		TestBench.doNothing(n);
 		if(n==0)
 			return 1;
 		else
@@ -117,6 +119,7 @@ public class Algorithms {
 	 * @return long power of workload
 	 */
 	public static long powRec2(long n) {
+		TestBench.doNothing(n);
 		if(n==0)
 			return 1;
 		else
@@ -129,6 +132,7 @@ public class Algorithms {
 	 * @return long power of workload
 	 */
 	public static long powRec3(long n) {
+		TestBench.doNothing(n);
 		if(n==0)
 			return 1;
 		else {
@@ -145,6 +149,7 @@ public class Algorithms {
 	 * @return long power of workload
 	 */
 	public static long powRec4(long n) {
+		TestBench.doNothing(n);
 		if(n==0)
 			return 1;
 		else {
