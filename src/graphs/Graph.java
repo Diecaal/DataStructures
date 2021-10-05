@@ -4,9 +4,15 @@ import java.util.ArrayList;
 
 public class Graph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
+	public static final int EMPTY = -1;
+	public static final double INFINITE = Double.MAX_VALUE;
+	// Graph elements
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
 	protected double[][] weight;
+	// Floyd extra data structures
+	protected double[][] A; // Matrix with minimum cost
+	protected int[][] P; // Matrix with minimum path cost (intermediate nodes)
 
 	/**
 	 * Constructor to initialize the Graph, storing memory for its node list, edges
@@ -21,6 +27,9 @@ public class Graph<T> {
 		nodes = new ArrayList<GraphNode<T>>(capacity);
 		edges = new boolean[capacity][capacity];
 		weight = new double[capacity][capacity];
+		// Floyd structures initialization
+		A = new double[capacity][capacity];
+		P = new int[capacity][capacity];
 	}
 
 	/**
@@ -249,7 +258,135 @@ public class Graph<T> {
 	}
 
 	/**
+	 * Method to initiate the traversal of the graph with Depth First Search given
+	 * an starting element. All nodes are reinitialized to false before.
+	 * 
+	 * @param element T element to begin the traversal
+	 * @return String containing the traversal order of the algorithm
+	 * @throws Exception if the given element not corresponds to any node
+	 */
+	public String traverseGraphDF(T element) throws Exception {
+		int i = getNode(element);
+		if (i == INDEX_NOT_FOUND)
+			throw new IllegalArgumentException("Node does not exist");
+
+		for (GraphNode<T> node : nodes) {
+			node.setVisited(false);
+		}
+
+		return DFPrint(i);
+	}
+
+	/**
+	 * Recursive method for traversing through all the children nodes of a given
+	 * current index, setting visited to true in all the nodes and retrieving its
+	 * elements.
+	 * 
+	 * @param currentIndex integer to perform the search
+	 * @return String containing the element of current iteration and child ones
+	 */
+	public String DFPrint(int currentIndex) {
+		nodes.get(currentIndex).setVisited(true);
+		String traversed = nodes.get(currentIndex).getElement().toString() + "-";
+		for (int j = 0; j < getSize(); j++) {
+			if (edges[currentIndex][j] == true && !nodes.get(j).isVisited()) {
+				traversed += DFPrint(j);
+			}
+		}
+		return traversed;
+	}
+
+	/**
+	 * Call to perform the floyd algorithm over our graph.
+	 * 
+	 * @param iterations integer of nodes to be taken into account for floyd
+	 *                   algorithm
+	 */
+	public void floyd(int iterations) {
+		// Initialize structures to start floyd algorithm
+		initsFloyd();
+		for (int k = 0; k < iterations; k++) {
+			for (int i = 0; i < getSize(); i++) {
+				for (int j = 0; j < getSize(); j++) {
+					// better path from i to j passing through k than
+					// the one already exising in A
+					if (A[i][k] + A[k][j] < A[i][j]) {
+						A[i][j] = A[i][k] + A[k][j]; // upade cost in A
+						P[i][j] = k; // update cost path in P (currentNode)
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Return the path given by floyd between two nodes
+	 * 
+	 * @param origin      T element of the origin node
+	 * @param destination T element of the destination node
+	 * @return string representation of the path between both nodes
+	 */
+	public String printFloydPath(T origin, T destination) {
+		int i = getNode(origin);
+		int j = getNode(destination);
+		if (i == INDEX_NOT_FOUND)
+			throw new IllegalArgumentException("Origin node does not exist");
+		if (j == INDEX_NOT_FOUND)
+			throw new IllegalArgumentException("Destination node does not exist");
+
+		String path = "";
+		int k = P[i][j];
+		path += printFloydPath(origin, nodes.get(k).getElement());
+		path += printFloydPath(nodes.get(k).getElement(), destination);
+		return path;
+	}
+
+	/**
+	 * Method used prior to initialize Floyd algorithm, filling our auxiliar
+	 * structures. A matrix with INFINITE values and P matrix with -1 values.
+	 */
+	private void initsFloyd() {
+		for (int i = 0; i < A.length; i++) {
+			for (int j = 0; j < A.length; j++) {
+				if (edges[i][j] == true) // A direct graph between nodes exists
+					A[i][j] = weight[i][j];
+				else if (i == j) // Fill diagonal with zeros
+					A[i][j] = 0.0;
+				else // Othetwise INFINITE cost among these nodes
+					A[i][j] = INFINITE;
+			}
+		}
+
+		for (int i = 0; i < P.length; i++) {
+			for (int j = 0; j < P.length; j++) {
+				P[i][j] = EMPTY;
+			}
+		}
+	}
+
+	/**
+	 * Return our A matrix containing the minimum cost for every node to reach every
+	 * other node
+	 * 
+	 * @return
+	 */
+	public double[][] getA() {
+		return A;
+	}
+
+	/**
+	 * Return our matri P containing the minimum cost path (intermmdiate nodes) for
+	 * every node to reach every other node.
+	 * 
+	 * @return
+	 */
+	public int[][] getP() {
+		return P;
+	}
+
+	/**
 	 * Testing purposes -- Return the list containing the nodes of the graph
+	 * 
 	 * @return
 	 */
 	protected ArrayList<GraphNode<T>> getNodes() {
@@ -258,14 +395,16 @@ public class Graph<T> {
 
 	/**
 	 * Testing purposes -- Return the edges matrix of the graph
+	 * 
 	 * @return
 	 */
 	protected boolean[][] getEdges() {
 		return edges;
 	}
-	
+
 	/**
 	 * Testing purposes -- Return the weight matrix of the graph
+	 * 
 	 * @return
 	 */
 	protected double[][] getWeight() {
