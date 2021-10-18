@@ -318,6 +318,32 @@ public class Graph<T> {
 			}
 		}
 	}
+	
+	/**
+	 * Method used prior to initialize Floyd algorithm, filling our auxiliar
+	 * structures. A matrix with INFINITE values and P matrix with -1 values.
+	 */
+	private void initsFloyd() {
+		for (int i = 0; i < A.length; i++) {
+			for (int j = 0; j < A.length; j++) {
+				if (i == j) // Fill diagonal with zeros
+					A[i][j] = 0.0;
+				else {
+					if (edges[i][j]) // A direct graph between nodes exists
+						A[i][j] = weight[i][j];
+					
+					else // Othetwise INFINITE cost among these nodes
+						A[i][j] = INFINITE;
+				}
+			}
+		}
+
+		for (int i = 0; i < P.length; i++) {
+			for (int j = 0; j < P[0].length; j++) {
+				P[i][j] = EMPTY;
+			}
+		}
+	}
 
 	/**
 	 * Return the path given by floyd between two nodes
@@ -339,29 +365,11 @@ public class Graph<T> {
 		path += printFloydPath(origin, nodes.get(k).getElement());
 		path += printFloydPath(nodes.get(k).getElement(), destination);
 		return path;
-	}
-
-	/**
-	 * Method used prior to initialize Floyd algorithm, filling our auxiliar
-	 * structures. A matrix with INFINITE values and P matrix with -1 values.
-	 */
-	private void initsFloyd() {
-		for (int i = 0; i < A.length; i++) {
-			for (int j = 0; j < A.length; j++) {
-				if (edges[i][j] == true) // A direct graph between nodes exists
-					A[i][j] = weight[i][j];
-				else if (i == j) // Fill diagonal with zeros
-					A[i][j] = 0.0;
-				else // Othetwise INFINITE cost among these nodes
-					A[i][j] = INFINITE;
-			}
-		}
-
-		for (int i = 0; i < P.length; i++) {
-			for (int j = 0; j < P.length; j++) {
-				P[i][j] = EMPTY;
-			}
-		}
+	}	
+	
+	public double[] dijkstra(int i) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
@@ -371,7 +379,7 @@ public class Graph<T> {
 	 * @return
 	 */
 	public double[][] getA() {
-		return A;
+		return this.A;
 	}
 
 	/**
@@ -381,7 +389,7 @@ public class Graph<T> {
 	 * @return
 	 */
 	public int[][] getP() {
-		return P;
+		return this.P;
 	}
 
 	/**
