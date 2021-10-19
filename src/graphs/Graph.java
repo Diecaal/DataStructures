@@ -1,6 +1,8 @@
 package graphs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Graph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
@@ -10,10 +12,11 @@ public class Graph<T> {
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
 	protected double[][] weight;
-	// Floyd extra data structures
-	protected double[][] A; // Matrix with minimum cost
-	protected int[][] P; // Matrix with minimum path cost (intermediate nodes)
 
+	
+	/*-------------- GRAPH --------------*/
+	
+	
 	/**
 	 * Constructor to initialize the Graph, storing memory for its node list, edges
 	 * and weight matrix
@@ -256,7 +259,11 @@ public class Graph<T> {
 		}
 		return isSource;
 	}
+	
+	
+	/*-------------- DEPTH FIRST SEARCH ALGORITHMS --------------*/
 
+	
 	/**
 	 * Method to initiate the traversal of the graph with Depth First Search given
 	 * an starting element. All nodes are reinitialized to false before.
@@ -296,6 +303,12 @@ public class Graph<T> {
 		return traversed;
 	}
 
+	
+	/*-------------- FLOYD ALGORITHMS --------------*/
+	
+	protected double[][] A; // Matrix with minimum cost
+	protected int[][] P; // Matrix with minimum path cost (intermediate nodes)
+	
 	/**
 	 * Call to perform the floyd algorithm over our graph.
 	 * 
@@ -303,8 +316,7 @@ public class Graph<T> {
 	 *                   algorithm
 	 */
 	public void floyd(int iterations) {
-		// Initialize structures to start floyd algorithm
-		initsFloyd();
+		initsFloyd(); // Initialize structures to start floyd algorithm
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < getSize(); i++) {
 				for (int j = 0; j < getSize(); j++) {
@@ -366,6 +378,16 @@ public class Graph<T> {
 		path += printFloydPath(nodes.get(k).getElement(), destination);
 		return path;
 	}	
+	
+	
+	/*-------------- DIJKSTRA ALGORITHMS --------------*/
+	
+	protected double[] D;
+	protected int[] PD;
+	
+	public void initsDijkstra() {
+		Set<Integer> s = new HashSet<>();
+	}
 	
 	public double[] dijkstra(int i) {
 		// TODO Auto-generated method stub
