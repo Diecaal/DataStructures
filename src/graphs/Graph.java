@@ -7,7 +7,7 @@ import java.util.Set;
 public class Graph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
 	public static final int EMPTY = -1;
-	public static final double INFINITE = Double.MAX_VALUE;
+	public static final double INFINITE = Double.POSITIVE_INFINITY;
 	// Graph elements
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
@@ -384,14 +384,38 @@ public class Graph<T> {
 	
 	protected double[] D;
 	protected int[] PD;
-	
-	public void initsDijkstra() {
-		Set<Integer> s = new HashSet<>();
-	}
-	
+		
+	/**
+	 * Call to peform Dijkstra algorihm over the graph from a starting
+	 * node
+	 * @param i int representing node selected for Dijkstra algorithm
+	 * @return []double minimum costs array (D)
+	 */
 	public double[] dijkstra(int i) {
+		Set<Integer> s = new HashSet<>();
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public void initsDijkstra(int elementIndex) {
+		D = new double[getSize()];
+		PD = new int[getSize()];
+		
+		for (int i = 0; i < D.length; i++) {
+			if(i == elementIndex)
+				D[i] = 0;
+			else if(edges[elementIndex][i])
+				D[i] = weight[elementIndex][i];
+			else
+				D[i] = INFINITE;
+		}
+		
+		for (int i = 0; i < PD.length; i++) {
+			if(edges[elementIndex][i])
+				PD[i] = elementIndex;
+			else
+				PD[i] = EMPTY;
+		}
 	}
 
 	/**
