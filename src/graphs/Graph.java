@@ -2,6 +2,7 @@ package graphs;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Graph<T> {
@@ -13,10 +14,8 @@ public class Graph<T> {
 	protected boolean[][] edges;
 	protected double[][] weight;
 
-	
 	/*-------------- GRAPH --------------*/
-	
-	
+
 	/**
 	 * Constructor to initialize the Graph, storing memory for its node list, edges
 	 * and weight matrix
@@ -259,11 +258,9 @@ public class Graph<T> {
 		}
 		return isSource;
 	}
-	
-	
+
 	/*-------------- DEPTH FIRST SEARCH ALGORITHMS --------------*/
 
-	
 	/**
 	 * Method to initiate the traversal of the graph with Depth First Search given
 	 * an starting element. All nodes are reinitialized to false before.
@@ -303,12 +300,11 @@ public class Graph<T> {
 		return traversed;
 	}
 
-	
 	/*-------------- FLOYD ALGORITHMS --------------*/
-	
+
 	protected double[][] A; // Matrix with minimum cost
 	protected int[][] P; // Matrix with minimum path cost (intermediate nodes)
-	
+
 	/**
 	 * Call to perform the floyd algorithm over our graph.
 	 * 
@@ -330,7 +326,14 @@ public class Graph<T> {
 			}
 		}
 	}
-	
+
+	/**
+	 * Call to perform the floyd algorithm over our graph algorithm
+	 */
+	public void floyd() {
+		floyd(getSize());
+	}
+
 	/**
 	 * Method used prior to initialize Floyd algorithm, filling our auxiliar
 	 * structures. A matrix with INFINITE values and P matrix with -1 values.
@@ -343,7 +346,7 @@ public class Graph<T> {
 				else {
 					if (edges[i][j]) // A direct graph between nodes exists
 						A[i][j] = weight[i][j];
-					
+
 					else // Othetwise INFINITE cost among these nodes
 						A[i][j] = INFINITE;
 				}
@@ -377,41 +380,70 @@ public class Graph<T> {
 		path += printFloydPath(origin, nodes.get(k).getElement());
 		path += printFloydPath(nodes.get(k).getElement(), destination);
 		return path;
-	}	
-	
-	
+	}
+
 	/*-------------- DIJKSTRA ALGORITHMS --------------*/
-	
+
 	protected double[] D;
 	protected int[] PD;
-		
+	protected List<GraphNode<T>> S; // Set containing the pivots already used for dijkstra algorithm
+
 	/**
-	 * Call to peform Dijkstra algorihm over the graph from a starting
-	 * node
+	 * Call to peform Dijkstra algorihm over the graph from a starting node
+	 * 
 	 * @param i int representing node selected for Dijkstra algorithm
 	 * @return []double minimum costs array (D)
 	 */
-	public double[] dijkstra(int i) {
-		Set<Integer> s = new HashSet<>();
-		// TODO Auto-generated method stub
-		return null;
+	public double[] dijkstra(T element) {
+		int initialElementIndex = getNode(element);
+		initsDijkstra(initialElementIndex);
+
+		S = new ArrayList<>(getSize());
+
+		int pivot = initialElementIndex;
+
+		while (S.size() != getSize()) {
+			S.add(nodes.get(pivot));
+			for (int i = 0; i < D.length; i++) {
+				if (edges[pivot][i] && ( D[pivot] + weight[pivot][i] < D[i] )) {
+					D[i] = D[pivot] + weight[pivot][i];
+					PD[i] = pivot;
+				}
+			}
+			pivot = getPivot();
+		}
+
+		return D;
 	}
-	
+
+	private int getPivot() {
+		double minCost = INFINITE;
+		int minCostPosition = 0;
+		for (int i = 0; i < D.length; i++) {
+			if (D[i] < minCost && !nodes.get(i).isVisited()) {
+				nodes.get(i).setVisited(true);
+				minCost = D[i];
+				minCostPosition = i;
+			}
+		}
+		return minCostPosition;
+	}
+
 	public void initsDijkstra(int elementIndex) {
 		D = new double[getSize()];
 		PD = new int[getSize()];
-		
+
 		for (int i = 0; i < D.length; i++) {
-			if(i == elementIndex)
+			if (i == elementIndex)
 				D[i] = 0;
-			else if(edges[elementIndex][i])
+			else if (edges[elementIndex][i])
 				D[i] = weight[elementIndex][i];
 			else
 				D[i] = INFINITE;
 		}
-		
+
 		for (int i = 0; i < PD.length; i++) {
-			if(edges[elementIndex][i])
+			if (edges[elementIndex][i])
 				PD[i] = elementIndex;
 			else
 				PD[i] = EMPTY;
@@ -464,5 +496,4 @@ public class Graph<T> {
 	protected double[][] getWeight() {
 		return weight;
 	}
-
 }

@@ -30,7 +30,7 @@ public class PrintFloydTest {
 			e.printStackTrace();
 		}
 		 
-		 g1.floyd(g1.getSize());
+		 g1.floyd();
 	
 		 
 		assertEquals("D-B-A-C",g1.printFloydPath("D", "C"));
