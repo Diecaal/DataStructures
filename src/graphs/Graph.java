@@ -1,9 +1,7 @@
 package graphs;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Graph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
@@ -377,8 +375,12 @@ public class Graph<T> {
 
 		String path = "";
 		int k = P[i][j];
-		path += printFloydPath(origin, nodes.get(k).getElement());
-		path += printFloydPath(nodes.get(k).getElement(), destination);
+		path += origin;
+		if(k > 0) {
+			path += printFloydPath(origin, nodes.get(k).getElement()) + "-";
+			path += printFloydPath(nodes.get(k).getElement(), destination) + "-";
+		}
+		path += destination;
 		return path;
 	}
 
@@ -401,13 +403,16 @@ public class Graph<T> {
 		S = new ArrayList<>(getSize());
 
 		int pivot = initialElementIndex;
-
-		while (S.size() != getSize()) {
+		nodes.get(initialElementIndex).setVisited(true);
+		
+		while (S.size() < getSize()) {
 			S.add(nodes.get(pivot));
 			for (int i = 0; i < D.length; i++) {
-				if (edges[pivot][i] && ( D[pivot] + weight[pivot][i] < D[i] )) {
-					D[i] = D[pivot] + weight[pivot][i];
-					PD[i] = pivot;
+				if(edges[pivot][i] && D[pivot]!=INFINITE) {
+					if (D[pivot] + weight[pivot][i] < D[i] ) {
+						D[i] = D[pivot] + weight[pivot][i];
+						PD[i] = pivot;
+					}
 				}
 			}
 			pivot = getPivot();
@@ -421,11 +426,11 @@ public class Graph<T> {
 		int minCostPosition = 0;
 		for (int i = 0; i < D.length; i++) {
 			if (D[i] < minCost && !nodes.get(i).isVisited()) {
-				nodes.get(i).setVisited(true);
 				minCost = D[i];
 				minCostPosition = i;
 			}
 		}
+		nodes.get( minCostPosition ).setVisited(true);
 		return minCostPosition;
 	}
 
@@ -433,17 +438,24 @@ public class Graph<T> {
 		D = new double[getSize()];
 		PD = new int[getSize()];
 
+		// Initialize all nodes to not visited before next execution
+		// for a correct working of S set
+		for(int i = 0; i < getSize(); i++) {
+			nodes.get(i).setVisited(false);
+		}
 		for (int i = 0; i < D.length; i++) {
 			if (i == elementIndex)
 				D[i] = 0;
-			else if (edges[elementIndex][i])
+			else if (edges[elementIndex][i] && i != elementIndex)
 				D[i] = weight[elementIndex][i];
 			else
 				D[i] = INFINITE;
 		}
 
 		for (int i = 0; i < PD.length; i++) {
-			if (edges[elementIndex][i])
+			if(i == elementIndex)
+				PD[i] = EMPTY;
+			else if (edges[elementIndex][i])
 				PD[i] = elementIndex;
 			else
 				PD[i] = EMPTY;
