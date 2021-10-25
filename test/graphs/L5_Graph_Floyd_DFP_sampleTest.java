@@ -62,8 +62,8 @@ public class L5_Graph_Floyd_DFP_sampleTest {
 		 assertEquals("c-d-a-b-", g1.traverseGraphDF('c'));
 		 assertEquals("d-a-b-c-", g1.traverseGraphDF('d'));
 		 
-		 
-		 // FLOYD
+//		 
+//		 // FLOYD
 		 
 		 g1.floyd(g1.getSize());
 
@@ -152,6 +152,7 @@ public class L5_Graph_Floyd_DFP_sampleTest {
 		 
 		 // TRAVERSE
 		 assertEquals("a-", g1.traverseGraphDF('a'));
+		 System.out.println();
 		 assertEquals("c-a-d-", g1.traverseGraphDF('c'));
 		 assertEquals("d-a-", g1.traverseGraphDF('d'));
 		 
@@ -159,7 +160,7 @@ public class L5_Graph_Floyd_DFP_sampleTest {
 		 // FLOYD
 		 g1.print();
 		 g1.floyd(g1.getSize());
-		 
+
 		 assertArrayEquals (new int[][]{
 				 { -1, -1, -1,  2}, 
 				 { -1, -1, -1,  2},

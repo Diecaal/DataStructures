@@ -144,6 +144,8 @@ public class Graph<T> {
 			edges[i][i] = edges[getSize() - 1][getSize() - 1];
 			weight[i][i] = weight[getSize() - 1][getSize() - 1];
 		}
+		
+		nodes.remove(getSize()-1);
 	}
 
 	/**
@@ -272,9 +274,7 @@ public class Graph<T> {
 		if (i == INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Node does not exist");
 
-		for (GraphNode<T> node : nodes) {
-			node.setVisited(false);
-		}
+		resetVisited();
 
 		return DFPrint(i);
 	}
@@ -296,6 +296,15 @@ public class Graph<T> {
 			}
 		}
 		return traversed;
+	}
+
+	/**
+	 * Resets all the graph nodes in the graph to not visited
+	 */
+	private void resetVisited() {
+		for (int i = 0; i < getSize(); i++) {
+			nodes.get(i).setVisited(false);
+		}
 	}
 
 	/*-------------- FLOYD ALGORITHMS --------------*/
@@ -329,7 +338,7 @@ public class Graph<T> {
 	 * Call to perform the floyd algorithm over our graph algorithm
 	 */
 	public void floyd() {
-		floyd(getSize());
+		this.floyd(this.getSize());
 	}
 
 	/**
@@ -337,8 +346,8 @@ public class Graph<T> {
 	 * structures. A matrix with INFINITE values and P matrix with -1 values.
 	 */
 	private void initsFloyd() {
-		for (int i = 0; i < A.length; i++) {
-			for (int j = 0; j < A.length; j++) {
+		for (int i = 0; i < getSize(); i++) {
+			for (int j = 0; j < getSize(); j++) {
 				if (i == j) // Fill diagonal with zeros
 					A[i][j] = 0.0;
 				else {
@@ -348,11 +357,6 @@ public class Graph<T> {
 					else // Othetwise INFINITE cost among these nodes
 						A[i][j] = INFINITE;
 				}
-			}
-		}
-
-		for (int i = 0; i < P.length; i++) {
-			for (int j = 0; j < P[0].length; j++) {
 				P[i][j] = EMPTY;
 			}
 		}
@@ -373,14 +377,40 @@ public class Graph<T> {
 		if (j == INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Destination node does not exist");
 
+		int k = P[i][j];
+
+		String path = String.format("%s-", origin.toString());
+		if (k != EMPTY) {
+			path += String.format("%s-", nodes.get(k).getElement().toString());
+			path += printFloyPathRec(origin, nodes.get(k).getElement());
+			path += printFloyPathRec(nodes.get(k).getElement(), destination);
+		}
+		path += String.format("%s", destination.toString());
+
+		return path;
+	}
+
+	/**
+	 * Recursive call for print floyd call that will be called from main print path
+	 * method once the original [origin-destination] edge is evaluated
+	 * 
+	 * @param origin      T element of origin in each call
+	 * @param destination T element of destination in each all
+	 * @return string representation of path between both nodes in each call
+	 */
+	private String printFloyPathRec(T origin, T destination) {
+		int i = getNode(origin);
+		int j = getNode(destination);
+
 		String path = "";
 		int k = P[i][j];
-		path += origin;
-		if(k > 0) {
-			path += printFloydPath(origin, nodes.get(k).getElement()) + "-";
-			path += printFloydPath(nodes.get(k).getElement(), destination) + "-";
+
+		if (k != EMPTY) {
+			path += printFloyPathRec(origin, nodes.get(k).getElement());
+			path += String.format("%s-", nodes.get(k).getElement().toString());
+			path += printFloyPathRec(nodes.get(k).getElement(), destination);
 		}
-		path += destination;
+
 		return path;
 	}
 
@@ -404,12 +434,12 @@ public class Graph<T> {
 
 		int pivot = initialElementIndex;
 		nodes.get(initialElementIndex).setVisited(true);
-		
+
 		while (S.size() < getSize()) {
 			S.add(nodes.get(pivot));
-			for (int i = 0; i < D.length; i++) {
-				if(edges[pivot][i] && D[pivot]!=INFINITE) {
-					if (D[pivot] + weight[pivot][i] < D[i] ) {
+			for (int i = 0; i < getSize(); i++) {
+				if (edges[pivot][i] && D[pivot] != INFINITE) {
+					if (D[pivot] + weight[pivot][i] < D[i]) {
 						D[i] = D[pivot] + weight[pivot][i];
 						PD[i] = pivot;
 					}
@@ -424,13 +454,13 @@ public class Graph<T> {
 	private int getPivot() {
 		double minCost = INFINITE;
 		int minCostPosition = 0;
-		for (int i = 0; i < D.length; i++) {
+		for (int i = 0; i < getSize(); i++) {
 			if (D[i] < minCost && !nodes.get(i).isVisited()) {
 				minCost = D[i];
 				minCostPosition = i;
 			}
 		}
-		nodes.get( minCostPosition ).setVisited(true);
+		nodes.get(minCostPosition).setVisited(true);
 		return minCostPosition;
 	}
 
@@ -440,10 +470,9 @@ public class Graph<T> {
 
 		// Initialize all nodes to not visited before next execution
 		// for a correct working of S set
-		for(int i = 0; i < getSize(); i++) {
-			nodes.get(i).setVisited(false);
-		}
-		for (int i = 0; i < D.length; i++) {
+		resetVisited();
+
+		for (int i = 0; i < getSize(); i++) {
 			if (i == elementIndex)
 				D[i] = 0;
 			else if (edges[elementIndex][i] && i != elementIndex)
@@ -452,8 +481,8 @@ public class Graph<T> {
 				D[i] = INFINITE;
 		}
 
-		for (int i = 0; i < PD.length; i++) {
-			if(i == elementIndex)
+		for (int i = 0; i < getSize(); i++) {
+			if (i == elementIndex)
 				PD[i] = EMPTY;
 			else if (edges[elementIndex][i])
 				PD[i] = elementIndex;

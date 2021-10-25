@@ -1,4 +1,5 @@
 package graphs;
+
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -11,7 +12,7 @@ public class L5_Floyd_EvalTest {
 	{
 		 Graph<Character> g1 = new Graph<Character>(3);
 		    
-		 System.out.println ("TEST EDIT BEGINS ***");
+		 System.out.println ("TEST EDIT BEGINS *");
 		 assertEquals(0, g1.getSize());
 		    
 		 try
@@ -101,7 +102,7 @@ public class L5_Floyd_EvalTest {
 	public void Test_Floyd_A() throws Exception {
 		 Graph<String> g = new Graph<String>(6);
 		    
-		 System.out.println ("TEST FLOYD A BEGINS ***");
+		 System.out.println ("TEST FLOYD A BEGINS *");
 		 assertEquals(0, g.getSize());
 		    
 		 try
@@ -173,7 +174,7 @@ public class L5_Floyd_EvalTest {
 		 
 		 try
 		 {
-			 assertEquals ("V1V3V5V6", "V1" + g.printFloydPath ("V1", "V6") + "V6");
+			 assertEquals ("V1-V5-V3-V6", g.printFloydPath ("V1", "V6"));
 		 }
 		 catch (Exception e)
 		 {
@@ -187,7 +188,7 @@ public class L5_Floyd_EvalTest {
 	{
 		 Graph<String> g = new Graph<String>(6);
 		    
-		 System.out.println ("TEST FLOYD B BEGINS ***");
+		 System.out.println ("TEST FLOYD B BEGINS *");
 		 assertEquals(0, g.getSize());
 		    
 		 try
@@ -319,10 +320,10 @@ public class L5_Floyd_EvalTest {
 		
 		 try
 		 {
-			 assertEquals ("SpainVenezuelaPolandJapan", "Spain" + g.printFloydPath ("Spain", "Japan") + "Japan");
-			 assertEquals ("SpainGreeceUK", "Spain" + g.printFloydPath ("Spain", "UK") + "UK");
-			 assertEquals ("SpainVenezuelaPoland", "Spain" + g.printFloydPath ("Spain", "Poland") + "Poland");
-			 assertEquals ("PolandSpainVenezuela", "Poland" + g.printFloydPath ("Poland", "Venezuela") + "Venezuela");
+			 assertEquals ("Spain-Poland-Venezuela-Japan", g.printFloydPath ("Spain", "Japan"));
+			 assertEquals ("Spain-Greece-UK", g.printFloydPath ("Spain", "UK"));
+			 assertEquals ("Spain-Venezuela-Poland", g.printFloydPath ("Spain", "Poland"));
+			 assertEquals ("Poland-Spain-Venezuela", g.printFloydPath ("Poland", "Venezuela"));
 
 		 }
 		 catch (Exception e)
@@ -356,8 +357,9 @@ public class L5_Floyd_EvalTest {
 			 {01.0, 00.0, 00.0, 02.0, 00.0, 00.0},
 			 {01.0, 00.0, 00.0, 02.0, 00.0, 00.0}}, g.getWeight());
 		 		 
+		 System.out.println(g.getSize());
 		 g.floyd(g.getSize());
-
+		 System.out.println(g.getSize());
 		 
 		 assertArrayEquals (new double[][]{
 			 {00.0, 03.0, Graph.INFINITE, 	05.0, 06.0, 06.0}, 
@@ -366,7 +368,7 @@ public class L5_Floyd_EvalTest {
 			 {01.0, 04.0, Graph.INFINITE, 	00.0, 01.0, 01.0}, 
 			 {01.0, 04.0, Graph.INFINITE, 	02.0, 00.0, 06.0},
 			 {01.0, 04.0, 04.0, 			02.0, 03.0, 00.0}}, g.getA());
-		 
+		 System.out.println(g.getSize());
 		 assertArrayEquals (new int[][]{
 			 {-1, -1, -1,  1,  3,  3}, 
 			 { 3, -1, -1, -1,  3,  3},
@@ -377,10 +379,10 @@ public class L5_Floyd_EvalTest {
 		 
 		 try
 		 {
-			 assertEquals ("SpainVenezuelaPolandJapan", "Spain" + g.printFloydPath ("Spain", "Japan") + "Japan");
-			 assertEquals ("SpainUK", "Spain" + g.printFloydPath ("Spain", "UK") + "UK");
-			 assertEquals ("SpainVenezuelaPoland", "Spain" + g.printFloydPath ("Spain", "Poland") + "Poland");
-			 assertEquals ("PolandSpainVenezuela", "Poland" + g.printFloydPath ("Poland", "Venezuela") + "Venezuela");
+			 assertEquals ("Spain-Poland-Venezuela-Japan", g.printFloydPath ("Spain", "Japan"));
+			 assertEquals ("Spain-UK", g.printFloydPath ("Spain", "UK"));
+			 assertEquals ("Spain-Venezuela-Poland", g.printFloydPath ("Spain", "Poland"));
+			 assertEquals ("Poland-Spain-Venezuela", g.printFloydPath ("Poland", "Venezuela"));
 		 }
 		 catch (Exception e)
 		 {
@@ -435,10 +437,10 @@ public class L5_Floyd_EvalTest {
 		 
 		 try
 		 {
-			 assertEquals ("SpainJapan", "Spain" + g.printFloydPath ("Spain", "Japan") + "Japan");
-			 assertEquals ("SpainUK", "Spain" + g.printFloydPath ("Spain", "UK") + "UK");
-			 assertEquals ("SpainVenezuelaPoland", "Spain" + g.printFloydPath ("Spain", "Poland") + "Poland");
-			 assertEquals ("PolandSpainVenezuela", "Poland" + g.printFloydPath ("Poland", "Venezuela") + "Venezuela");
+			 assertEquals ("Spain-Japan", g.printFloydPath ("Spain", "Japan"));
+			 assertEquals ("Spain-UK", g.printFloydPath ("Spain", "UK"));
+			 assertEquals ("Spain-Venezuela-Poland", g.printFloydPath ("Spain", "Poland"));
+			 assertEquals ("Poland-Spain-Venezuela", g.printFloydPath ("Poland", "Venezuela"));
 		 }
 		 catch (Exception e)
 		 {
