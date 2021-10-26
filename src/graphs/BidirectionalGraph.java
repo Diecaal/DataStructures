@@ -1,16 +1,12 @@
 package graphs;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class Graph<T> {
+public class BidirectionalGraph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
 	public static final int EMPTY = -1;
 	public static final double INFINITE = Double.POSITIVE_INFINITY;
-	public static final double INFINITE_NEGATIVE = Double.NEGATIVE_INFINITY;
-	
 	// Graph elements
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
@@ -24,7 +20,7 @@ public class Graph<T> {
 	 * 
 	 * @param maximum capacity of the graph
 	 */
-	public Graph(int capacity) {
+	public BidirectionalGraph(int capacity) {
 		if (capacity < 0) {
 			throw new IllegalArgumentException("Capacity must be equal/greater zero");
 		}
@@ -100,7 +96,7 @@ public class Graph<T> {
 		if (j == INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Destination node does not exist");
 
-		return edges[i][j];
+		return edges[i][j] || edges[j][i];
 	}
 
 	/**
@@ -122,7 +118,9 @@ public class Graph<T> {
 			throw new IllegalArgumentException("Destination node does not exist");
 
 		this.edges[i][j] = true;
+		this.edges[j][i] = true;
 		this.weight[i][j] = weight;
+		this.weight[j][i] = weight;
 	}
 
 	/**
@@ -188,7 +186,9 @@ public class Graph<T> {
 			throw new IllegalArgumentException("No existing edge between these nodes");
 
 		edges[i][j] = false;
+		edges[j][i] = false;
 		weight[i][j] = 0.0;
+		weight[j][i] = 0.0;
 	}
 
 	/**
@@ -293,15 +293,11 @@ public class Graph<T> {
 		int i = getNode(origin);
 		int j = getNode(destination);
 		
-		//double[] D = dijkstraForShortestPath(origin);
-		//return D[j];
+		initsDijkstraForShortestPathLenght(i);
 		
-		// Easier if performed with floyd as it only used its A & P matrix
-		// If dijkstra used we can obtain wrong data as it accesed weight original matrix
-		// (more changes needes, adding 1 in compute dijkstra method)
-		floydForShortestPathLength();
+		double[] D = dijkstra(origin);
 		
-		return (int) A[i][j];
+		return (int) D[j];
 	}
 
 	public T getCenter() {
@@ -309,11 +305,7 @@ public class Graph<T> {
 		
 		List<Double> maximumCostsPerColumn = new ArrayList<Double>();
 		for(int i = 0; i < getSize(); i++) {
-			maximumCostsPerColumn.add(INFINITE_NEGATIVE);
-		}
-		
-		for(int i = 0; i < getSize(); i++) {
-			for(int j = 0; j < getSize(); j++) {
+			for(int j = 0; j < getSize(); i++) {
 				if(A[i][j] > maximumCostsPerColumn.get(i) && A[i][j] != INFINITE) {
 					maximumCostsPerColumn.set(i, A[i][j]);
 				}
@@ -330,33 +322,6 @@ public class Graph<T> {
 		}
 		
 		return nodes.get(minCostPosition).getElement();
-	}
-	
-	public boolean containsCycles() {
-		boolean containCycle = false;
-
-		for(int i = 0; i < getSize(); i++) {
-			String traversed = cycleCheckRec(i);
-			String[] nodes = traversed.split("-");
-			Set<String> uniqueNodes = new HashSet<String>();
-			System.out.println(traversed);
-			for(int currentNode = 0; currentNode < nodes.length; currentNode++) {
-				if( !uniqueNodes.add(nodes[currentNode].toString()) )
-						return true;
-			}
-		}
-		return containCycle;
-	}
-	
-	private String cycleCheckRec(int currentIndex) {
-		nodes.get(currentIndex).setVisited(true);
-		String traversed = nodes.get(currentIndex).getElement().toString() + "-";
-		for (int j = 0; j < getSize(); j++) {
-			if (edges[currentIndex][j] == true) {
-				traversed += DFPrint(j);
-			}
-		}
-		return traversed;
 	}
 	
 	/*-------------- DEPTH FIRST SEARCH ALGORITHMS --------------*/
@@ -433,22 +398,6 @@ public class Graph<T> {
 			}
 		}
 	}
-	
-	public void floydForShortestPathLength() {
-		initsFloydForShortestPathLength(); // Initialize structures to start floyd algorithm
-		for (int k = 0; k < getSize(); k++) {
-			for (int i = 0; i < getSize(); i++) {
-				for (int j = 0; j < getSize(); j++) {
-					// better path from i to j passing through k than
-					// the one already exising in A
-					if (A[i][k] + A[k][j] < A[i][j]) {
-						A[i][j] = A[i][k] + A[k][j]; // upade cost in A
-						P[i][j] = k; // update cost path in P (currentNode)
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * Call to perform the floyd algorithm over our graph algorithm
@@ -469,23 +418,6 @@ public class Graph<T> {
 				else {
 					if (edges[i][j]) // A direct graph between nodes exists
 						A[i][j] = weight[i][j];
-
-					else // Othetwise INFINITE cost among these nodes
-						A[i][j] = INFINITE;
-				}
-				P[i][j] = EMPTY;
-			}
-		}
-	}
-	
-	private void initsFloydForShortestPathLength() {
-		for (int i = 0; i < getSize(); i++) {
-			for (int j = 0; j < getSize(); j++) {
-				if (i == j) // Fill diagonal with zeros
-					A[i][j] = 0.0;
-				else {
-					if (edges[i][j]) // A direct graph between nodes exists
-						A[i][j] = 1;
 
 					else // Othetwise INFINITE cost among these nodes
 						A[i][j] = INFINITE;
@@ -574,31 +506,6 @@ public class Graph<T> {
 				if (edges[pivot][i] && D[pivot] != INFINITE) {
 					if (D[pivot] + weight[pivot][i] < D[i]) {
 						D[i] = D[pivot] + weight[pivot][i];
-						PD[i] = pivot;
-					}
-				}
-			}
-			pivot = getPivot();
-		}
-
-		return D;
-	}
-	
-	private double[] dijkstraForShortestPath(T element) {
-		int initialElementIndex = getNode(element);
-		initsDijkstraForShortestPathLenght(initialElementIndex);
-
-		S = new ArrayList<>(getSize());
-
-		int pivot = initialElementIndex;
-		nodes.get(initialElementIndex).setVisited(true);
-
-		while (S.size() < getSize()) {
-			S.add(nodes.get(pivot));
-			for (int i = 0; i < getSize(); i++) {
-				if (edges[pivot][i] && D[pivot] != INFINITE) {
-					if (D[pivot] + 1 < D[i]) {
-						D[i] = D[pivot] + 1;
 						PD[i] = pivot;
 					}
 				}

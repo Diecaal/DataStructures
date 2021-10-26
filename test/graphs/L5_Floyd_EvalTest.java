@@ -8,7 +8,7 @@ import org.junit.Test;
 public class L5_Floyd_EvalTest {
 
 	@Test
-	public void Test_Edit () throws Exception 
+	public void Test_Edit ()
 	{
 		 Graph<Character> g1 = new Graph<Character>(3);
 		    
