@@ -30,13 +30,23 @@ public class ContainsCycleTest {
 		 
 		 assertEquals(true, g1.containsCycles());
 		 
+		 System.out.println("REMOVING THE EDGE");
+		 
 		 try {
 			 g1.removeEdge('d', 'a');
 		 } catch(Exception e) {
 			 
 		 }
 		 
-		 assertEquals(false, g1.containsCycles());
+		 System.out.println("ADDING CYCLE IN D");
+		 
+		 try {
+			 g1.addEdge('d', 'd', 1.0);
+		 } catch(Exception e) {
+			 
+		 }
+		 
+		 assertEquals(true, g1.containsCycles());
 	}
 
 }

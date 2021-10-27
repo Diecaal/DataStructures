@@ -83,12 +83,12 @@ public class L6B_Exercises_sampleTest {
 		
 	
 		 
-//		 assertEquals("V1-V2-V3-V5-V4-V6-", g.BFPrint("V1"));
-//		 assertEquals("V2-V5-V4-V6-"      , g.BFPrint("V2"));
-//		 assertEquals("V3-V5-V4-V6-"	  , g.BFPrint("V3"));
-//		 assertEquals("V4-"				  , g.BFPrint("V4"));
-//		 assertEquals("V5-V4-V6-"		  , g.BFPrint("V5"));
-//		 assertEquals("V6-V4-"		      , g.BFPrint("V6"));
+		 assertEquals("V1-V2-V3-V5-V4-V6-", g.BFPrint("V1"));
+		 assertEquals("V2-V5-V4-V6-"      , g.BFPrint("V2"));
+		 assertEquals("V3-V5-V4-V6-"	  , g.BFPrint("V3"));
+		 assertEquals("V4-"				  , g.BFPrint("V4"));
+		 assertEquals("V5-V4-V6-"		  , g.BFPrint("V5"));
+		 assertEquals("V6-V4-"		      , g.BFPrint("V6"));
 		 		 
 		 assertEquals("V4", g.getCenter());
 
@@ -111,12 +111,12 @@ public class L6B_Exercises_sampleTest {
 		 }
 		 
 		 
-//		 assertEquals("V1-V2-V3-V5-V6-", g.BFPrint("V1"));
-//		 assertEquals("V2-V5-V6-"      , g.BFPrint("V2"));
-//		 assertEquals("V3-V5-V6-"	  , g.BFPrint("V3"));
-//
-//		 assertEquals("V5-V6-"		  , g.BFPrint("V5"));
-//		 assertEquals("V6-"		      , g.BFPrint("V6"));
+		 assertEquals("V1-V2-V3-V5-V6-", g.BFPrint("V1"));
+		 assertEquals("V2-V5-V6-"      , g.BFPrint("V2"));
+		 assertEquals("V3-V5-V6-"	  , g.BFPrint("V3"));
+
+		 assertEquals("V5-V6-"		  , g.BFPrint("V5"));
+		 assertEquals("V6-"		      , g.BFPrint("V6"));
 		 		 
 		 assertEquals("V6", g.getCenter());
 

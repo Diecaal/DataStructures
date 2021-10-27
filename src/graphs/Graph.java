@@ -1,17 +1,25 @@
 package graphs;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
+/**
+ * Graph class for performing different algorithms
+ * 
+ * @author UO271506
+ *
+ * @param <T>
+ */
 public class Graph<T> {
 	public static final int INDEX_NOT_FOUND = -1;
 	public static final int EMPTY = -1;
 	public static final double INFINITE = Double.POSITIVE_INFINITY;
 	public static final double INFINITE_NEGATIVE = Double.NEGATIVE_INFINITY;
-	
-	// Graph elements
+
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
 	protected double[][] weight;
@@ -148,8 +156,8 @@ public class Graph<T> {
 			edges[i][i] = edges[getSize() - 1][getSize() - 1];
 			weight[i][i] = weight[getSize() - 1][getSize() - 1];
 		}
-		
-		nodes.remove(getSize()-1);
+
+		nodes.remove(getSize() - 1);
 	}
 
 	/**
@@ -264,101 +272,240 @@ public class Graph<T> {
 	}
 
 	/*-------------- EXTRA EXERCISES  ---------------------------*/
-	
-	// DIJKSTRA USAGE
+
+	/**
+	 * Determines if current graph is strongly connected, meaning that there exists
+	 * a path from every node to every other node in the graph
+	 * 
+	 * @return boolean true if graph is strongly connected. False otherwise
+	 */
 	public boolean isStronglyConnected() {
 		boolean stronglyConnected = true;
-		for(int currentNode = 0; currentNode < getSize(); currentNode++) {
-			double[] PD  = dijkstra(nodes.get(currentNode).getElement());
-			for(int i = 0; i < PD.length; i++) {
-				if(i != currentNode && PD[i] == INFINITE) {
+
+		/* Floyd usage */
+		floyd();
+		for (int i = 0; i < getSize(); i++) {
+			for (int j = 0; j < getSize(); j++) {
+				if (A[i][j] == INFINITE)
+					return false;
+			}
+		}
+
+		/* Dijkstra usage */
+//		for(int currentNode = 0; currentNode < getSize(); currentNode++) {
+//			double[] PD  = dijkstra(nodes.get(currentNode).getElement());
+//			for(int i = 0; i < PD.length; i++) {
+//				if(i != currentNode && PD[i] == INFINITE) {
+//					return false;
+//				}
+//			}
+//		}
+
+		return stronglyConnected;
+	}
+
+	/**
+	 * Determines if current graph is semi connected, meaning that a path from a
+	 * node to any other node in the graph contains every other node
+	 * 
+	 * @return boolean true if graph is strongly connected. False otherwise
+	 */
+	public boolean isSemiConnected() {
+		boolean stronglyConnected = true;
+		for (int currentNode = 0; currentNode < getSize(); currentNode++) {
+			double[] PD = dijkstra(nodes.get(currentNode).getElement());
+			for (int i = 0; i < PD.length; i++) {
+				if (i != currentNode && PD[i] == INFINITE) {
 					stronglyConnected = false;
 				}
 			}
 		}
 		return stronglyConnected;
 	}
-	
+
+	/**
+	 * Determines if current graph is weakly connected. It is checked turning all
+	 * the edges and weights in our graph to bidirectional ones, and checking over
+	 * this new graph distribution if it is strongly connected. At the end the
+	 * previos edges and weight are settled again
+	 * 
+	 * @return boolean true if the graph is strongly connected after turning their
+	 *         edges into bidirectional ones. False otherwise
+	 */
+	public boolean isWeaklyConnected() {
+		boolean toRet;
+
+		boolean[][] edgesAux = edges;
+		double[][] weightAux = weight;
+
+		turnEdgesToBidirectional();
+		toRet = this.isStronglyConnected();
+
+		edges = edgesAux;
+		weight = weightAux;
+
+		return toRet;
+	}
+
+	/**
+	 * Turn all the directed edges and weights in the graph into bidirectional ones.
+	 */
+	private void turnEdgesToBidirectional() {
+		for (int i = 0; i < getSize(); i++) {
+			for (int j = 0; j < getSize(); j++) {
+				if (edges[i][j]) {
+					edges[j][i] = true;
+					weight[j][i] = weight[i][j];
+				}
+			}
+		}
+	}
+
+	/**
+	 * Calculate the cheapest path costh from a node to another one by using path
+	 * cost matrix [D] of dijkstra algorithm
+	 * 
+	 * @param origin      T element for origin of the path
+	 * @param destination T element for the end of the path
+	 * @return double path cost contained by D matrix after dijkstra execution
+	 */
 	public double cheapestPathCost(T origin, T destination) {
 		checkInitialNodes(origin, destination);
-		
+
 		double[] D = dijkstra(origin);
 		int destNode = getNode(destination);
-		
+
 		return D[destNode];
 	}
-	
+
+	/**
+	 * Calculate the shortest path cost from a node to another one by using minimum
+	 * path cost matrix [P] of floyd algorithm
+	 * 
+	 * New floyd method and floyd initializacion are created, as for the correct
+	 * perform of this algorithm all the weight among nodes with existing edges will
+	 * be 1. This way floyd will forget about cost measurements, and only take into
+	 * accounts shortest paths as all are weighted the same
+	 * 
+	 * @param origin      T element for origin of the path
+	 * @param destination T element for the end of the path
+	 * @return int shortest path cost contained by P matrix after floyd execution
+	 */
 	public int shortestPathLength(T origin, T destination) {
 		checkInitialNodes(origin, destination);
 		int i = getNode(origin);
 		int j = getNode(destination);
-		
-		//double[] D = dijkstraForShortestPath(origin);
-		//return D[j];
-		
+
+		// double[] D = dijkstraForShortestPath(origin);
+		// return D[j];
+
 		// Easier if performed with floyd as it only used its A & P matrix
-		// If dijkstra used we can obtain wrong data as it accesed weight original matrix
+		// If dijkstra used we can obtain wrong data as it accesed weight original
+		// matrix
 		// (more changes needes, adding 1 in compute dijkstra method)
 		floydForShortestPathLength();
-		
+
 		return (int) A[i][j];
 	}
 
+	/**
+	 * Returns the center element of a graph by performing floyd algorithm,
+	 * obtaining the node with maximum cost per column, and following the smallest
+	 * one among them
+	 * 
+	 * @return T element being the center of the graph
+	 */
 	public T getCenter() {
 		floyd();
-		
+
 		List<Double> maximumCostsPerColumn = new ArrayList<Double>();
-		for(int i = 0; i < getSize(); i++) {
+		for (int i = 0; i < getSize(); i++) {
 			maximumCostsPerColumn.add(INFINITE_NEGATIVE);
 		}
-		
-		for(int i = 0; i < getSize(); i++) {
-			for(int j = 0; j < getSize(); j++) {
-				if(A[i][j] > maximumCostsPerColumn.get(i) && A[i][j] != INFINITE) {
+
+		for (int i = 0; i < getSize(); i++) {
+			for (int j = 0; j < getSize(); j++) {
+				if (A[i][j] > maximumCostsPerColumn.get(i) && A[i][j] != INFINITE) {
 					maximumCostsPerColumn.set(i, A[i][j]);
 				}
 			}
 		}
-		
+
 		double minCost = INFINITE;
 		int minCostPosition = EMPTY;
 		for (int i = 0; i < maximumCostsPerColumn.size(); i++) {
-			if(maximumCostsPerColumn.get(i) < minCost) {
+			if (maximumCostsPerColumn.get(i) < minCost) {
 				minCost = maximumCostsPerColumn.get(i);
 				minCostPosition = i;
 			}
 		}
-		
+
 		return nodes.get(minCostPosition).getElement();
 	}
-	
+
+	/**
+	 * Determines if the graph has any cycle existing, meaning it can perform a path
+	 * starting and finishing in the same node. This implementation is based Depth
+	 * First algorithm
+	 * 
+	 * @return true if graph contains cycles. False otherwise
+	 */
 	public boolean containsCycles() {
 		boolean containCycle = false;
 
-		for(int i = 0; i < getSize(); i++) {
-			String traversed = cycleCheckRec(i);
-			String[] nodes = traversed.split("-");
-			Set<String> uniqueNodes = new HashSet<String>();
-			System.out.println(traversed);
-			for(int currentNode = 0; currentNode < nodes.length; currentNode++) {
-				if( !uniqueNodes.add(nodes[currentNode].toString()) )
-						return true;
+		for (int i = 0; i < getSize(); i++) {
+			resetVisited();
+			String traversed = nodes.get(i).getElement().toString() + "-";
+			for (int j = 0; j < getSize(); j++) {
+				if (edges[i][j]) {
+					traversed += DFPrint(j);
+				}
 			}
-		}
+
+			String[] nodes = traversed.split("-");
+			// Set tracing if repeated elements were added in the traversal (cycle found)
+			Set<String> uniqueNodes = new HashSet<String>();
+
+			// we try to find a cycle in the string of the traversal
+			for (int currentNode = 0; currentNode < nodes.length; currentNode++) {
+				// Repeated element found if add returns false = cycle
+				if (!uniqueNodes.add(nodes[currentNode]))
+					return true;
+			}
+		} // for every node in the graph
 		return containCycle;
 	}
-	
-	private String cycleCheckRec(int currentIndex) {
-		nodes.get(currentIndex).setVisited(true);
-		String traversed = nodes.get(currentIndex).getElement().toString() + "-";
-		for (int j = 0; j < getSize(); j++) {
-			if (edges[currentIndex][j] == true) {
-				traversed += DFPrint(j);
+
+	/**
+	 * Prints the path traversed by Breath First Search
+	 * 
+	 * @param element source node to begin the search
+	 * @return String representing the traversed nodes
+	 */
+	public String BFPrint(T element) {
+		checkInitialNode(element);
+
+		int startingNode = getNode(element);
+		resetVisited();
+		Queue<Integer> queue = new ArrayDeque<Integer>(getSize());
+		queue.add(startingNode);
+
+		String traversed = nodes.get(startingNode).getElement() + "-";
+
+		while (!queue.isEmpty()) {
+			for (int i = 0; i < getSize(); i++) {
+				if (edges[queue.peek()][i] && !nodes.get(i).isVisited()) {
+					nodes.get(i).setVisited(true);
+					traversed += nodes.get(i).getElement() + "-";
+					queue.add(i);
+				}
 			}
+			queue.remove();
 		}
+
 		return traversed;
 	}
-	
+
 	/*-------------- DEPTH FIRST SEARCH ALGORITHMS --------------*/
 
 	/**
@@ -433,7 +580,11 @@ public class Graph<T> {
 			}
 		}
 	}
-	
+
+	/**
+	 * Floyd method used specifically to solve shortest part algorithm, initializing
+	 * its A matrix weight to 1 when edges among nodes existing
+	 */
 	public void floydForShortestPathLength() {
 		initsFloydForShortestPathLength(); // Initialize structures to start floyd algorithm
 		for (int k = 0; k < getSize(); k++) {
@@ -477,7 +628,12 @@ public class Graph<T> {
 			}
 		}
 	}
-	
+
+	/**
+	 * Sets the floyd A matrix to 1 when edges among nodes exist, so that algorithm
+	 * only takes into account the number of edges among nodes (shortest path) and
+	 * not the weights among them
+	 */
 	private void initsFloydForShortestPathLength() {
 		for (int i = 0; i < getSize(); i++) {
 			for (int j = 0; j < getSize(); j++) {
@@ -583,7 +739,17 @@ public class Graph<T> {
 
 		return D;
 	}
-	
+
+	/**
+	 * Implementation of dijkstra for resolution of shortest path algorithm, calling
+	 * its init method to add 1 in D matrix when edges existing. At every single
+	 * time dijkstra algorithm used weights, we will replace it by 1 (comparing and
+	 * updating values)
+	 * 
+	 * @param element T source element to start dijkstra from
+	 * @return double[] D matrix containing the costs to every node from selected
+	 *         node
+	 */
 	private double[] dijkstraForShortestPath(T element) {
 		int initialElementIndex = getNode(element);
 		initsDijkstraForShortestPathLenght(initialElementIndex);
@@ -609,6 +775,12 @@ public class Graph<T> {
 		return D;
 	}
 
+	/**
+	 * Gets the best pivot for dijkstra taking into account D cost matrix current
+	 * status
+	 * 
+	 * @return int representing the node selected to be pivot
+	 */
 	private int getPivot() {
 		double minCost = INFINITE;
 		int minCostPosition = 0;
@@ -622,6 +794,11 @@ public class Graph<T> {
 		return minCostPosition;
 	}
 
+	/**
+	 * Initialize the D and PD matrices for dijkstra algorithm
+	 * 
+	 * @param elementIndex T source element for dijkstra
+	 */
 	public void initsDijkstra(int elementIndex) {
 		D = new double[getSize()];
 		PD = new int[getSize()];
@@ -648,7 +825,14 @@ public class Graph<T> {
 				PD[i] = EMPTY;
 		}
 	}
-	
+
+	/**
+	 * Initializes specially the D matrix of costs in Dijkstra for shortest path
+	 * algorithm, setting to 1 the cost where edges exists so algorithm only takes
+	 * into account taking the less number od edges possible to reach destination
+	 * 
+	 * @param elementIndex
+	 */
 	private void initsDijkstraForShortestPathLenght(int elementIndex) {
 		D = new double[getSize()];
 		PD = new int[getSize()];
@@ -675,13 +859,14 @@ public class Graph<T> {
 				PD[i] = EMPTY;
 		}
 	}
-	
+
 	/**
 	 * Condition at every method asking for two elements to perform some operations.
-	 * Either if the origin or departure element does not correspond to
-	 * any node in the graph, exception is throw.
-	 * @param origin
-	 * @param destination
+	 * Either if the origin or departure element does not correspond to any node in
+	 * the graph, exception is throw.
+	 * 
+	 * @param origin      T element of origin
+	 * @param destination T element of destination
 	 */
 	private void checkInitialNodes(T origin, T destination) {
 		int i = getNode(origin);
@@ -690,6 +875,17 @@ public class Graph<T> {
 			throw new IllegalArgumentException("Origin node does not exist");
 		if (j == INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Destination node does not exist");
+	}
+
+	/**
+	 * Condition checking the given element corresponds to some node in the graph
+	 * 
+	 * @param element T element
+	 */
+	private void checkInitialNode(T element) {
+		int i = getNode(element);
+		if (i == INDEX_NOT_FOUND)
+			throw new IllegalArgumentException("Element given node does not exist");
 	}
 
 	/**
