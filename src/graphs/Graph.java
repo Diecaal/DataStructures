@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
+
 /**
  * Graph class for performing different algorithms
  * 
@@ -350,7 +352,7 @@ public class Graph<T> {
 	/**
 	 * Turn all the directed edges and weights in the graph into bidirectional ones.
 	 */
-	private void turnEdgesToBidirectional() {
+	public void turnEdgesToBidirectional() {
 		for (int i = 0; i < getSize(); i++) {
 			for (int j = 0; j < getSize(); j++) {
 				if (edges[i][j]) {
@@ -933,5 +935,39 @@ public class Graph<T> {
 	 */
 	protected double[][] getWeight() {
 		return weight;
+	}
+	
+	public String prim(T element) {
+		List<Integer> nodesToInspectEdges = new ArrayList<Integer>();
+		List<T> nodesTraversed = new ArrayList<T>();
+		double costPath = 0.0;
+		nodesToInspectEdges.add( getNode(element) );
+		nodesTraversed.add(element);
+		nodes.get( getNode(element) ).setVisited(true);
+		while(nodesToInspectEdges.size() < getSize()) {
+			int[] edge = getMinimumCostEdge(nodesToInspectEdges); 
+			costPath += weight[edge[0]][edge[1]]; 
+			nodesTraversed.add( nodes.get(edge[1]).getElement() );
+			nodesToInspectEdges.add( edge[1] );
+		}
+		
+		System.out.println(String.format("Cost of the solution: %s", costPath));
+		return nodesTraversed.toString();
+	}
+
+	private int[] getMinimumCostEdge(List<Integer> nodesToInspectEdges) {
+		int[] edge = new int[2];
+		double minCost = INFINITE;
+		for(Integer i : nodesToInspectEdges) {
+			for(int j=0;j<getSize();j++) {
+				if(edges[i][j] && weight[i][j] < minCost && !nodes.get(j).isVisited()) {
+					minCost = weight[i][j];
+					edge[0] = i;
+					edge[1] = j;
+				}
+			}
+		}
+		nodes.get( edge[1] ).setVisited(true);
+		return edge;
 	}
 }
