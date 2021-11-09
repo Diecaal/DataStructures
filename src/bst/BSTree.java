@@ -2,6 +2,9 @@ package bst;
 
 public class BSTree<T extends Comparable<T>> {
 
+	/**
+	 * BSTNode root of the BSTree
+	 */
 	private BSTNode<T> root;
 
 	/**
@@ -12,6 +15,12 @@ public class BSTree<T extends Comparable<T>> {
         root = add(element, root);
     }
     
+    /**
+     * Recursive call to add an element to the BSTree
+     * @param element {@link T} to be added
+     * @param theRoot {@link BSTNode} current subtree root
+     * @return
+     */
     private BSTNode<T> add(T element, BSTNode<T> theRoot) {
         if (theRoot == null) {
             return new BSTNode<T>(element);
@@ -29,18 +38,29 @@ public class BSTree<T extends Comparable<T>> {
             theRoot.setRight(add(element, theRoot.getRight()));
         }
 
+        /*
+		 * Acts as a recursive call peforming updateHeight on every single node
+		 * as add is a recursive method
+		 */
+        theRoot.updateHeight();
         return theRoot;
     }
     	  
     /**
      * Given an element checks if it exists in the BSTree
-     * @param element
+     * @param element {@link T} to be searched
      * @return
      */
     public boolean search(T element) {
         return search(root, element);
     }
 
+    /**
+     * Recursive call to search for an element in the BSTree
+     * @param theRoot {@link BSTNode} current subtree root
+     * @param element {@link T} to be searched
+     * @return
+     */
     private boolean search(BSTNode<T> theRoot, T element) {
         if (theRoot == null) {
             return false;
@@ -59,23 +79,39 @@ public class BSTree<T extends Comparable<T>> {
         }
     }
     
+    /**
+     * Given a element, it removes it from the BSTree
+     * @param element {@link T} to be removed
+     * @return {@link BSTNode} node removed
+     */
     public BSTNode<T> remove(T element) {
     	return remove(root, element);
     }
     
+    /**
+     * Recursive call to remove an element in the BSTree
+     * 
+     * Once reached element found stage, return statement means what node 
+     * with element to be removed [current theRoot] will be replaced by (null || other node)
+     * @param theRoot {@link BSTNode} current subtree root
+     * @param element {@link T} to be removed
+     * @return {@link BSTNode} node removed
+     */
     private BSTNode<T> remove(BSTNode<T> theRoot, T element) {
-		if(theRoot == null) {
-			throw new IllegalArgumentException("Element does not exist");
-		}
-		
+		if(theRoot == null) 
+			throw new IllegalArgumentException("Node to be removed not present in the tree");
+		if(element == null) 
+			throw new IllegalArgumentException("Element to be removed can not be null");
+		/* 
+		 * Recursive calls iterating throught the BSTree 
+		 * until node with given element is found
+		 */
 		if(element.compareTo(theRoot.getElement()) < 0) {
 			theRoot.setLeft( remove(theRoot.getLeft(), element) );
-		}
-		
-		else if(element.compareTo(theRoot.getElement()) > 0) {
+		} else if(element.compareTo(theRoot.getElement()) > 0) {
 			theRoot.setRight( remove(theRoot.getRight(), element) );
 		}
-		// Element to be removed found
+		/* Element to be removed found */
 		else {
 			/* Root has no children nodes */
 			if(theRoot.getRight() == null && theRoot.getLeft() == null) {
@@ -83,29 +119,34 @@ public class BSTree<T extends Comparable<T>> {
 			}
 			/* Root has only left child node */
 			else if(theRoot.getRight() == null) {
-				return theRoot.getLeft();
+				return theRoot.getLeft(); // Replace theRoot by only left children
 			}
 			/* Root has only right child node */
 			else if(theRoot.getLeft() == null) {
-				return theRoot.getRight();
+				return theRoot.getRight(); // Replace theRoot by only right children
 			}
 			/* Root has two child nodes */
 			else {
 				// Assign to root max element node of left subtree
 				theRoot.setElement( getMax(theRoot.getLeft() ));
-				// Later remove that max element node of left subtree found
+				// Later remove node with element we just assigned to root 
 				theRoot.setLeft( remove(theRoot.getLeft(), theRoot.getElement()) );
 			}
 		}
 		
+		/*
+		 * Acts as a recursive call peforming updateHeight on every single node
+		 * as remove is a recursive method
+		 */
+		theRoot.updateHeight();
 		return theRoot;
 	}
 
-    /**
-     * Iterative version to find the node with greatest node for a given
-     * subtree root node
-     * @param theRoot
-     * @return
+	/**
+     * Iterative version to find node with greatest element for 
+     * a given subtree root node
+     * @param theRoot {@link BSTNode} current subtree root
+     * @return {@link T} maximum element from subtree
      */
 	private T getMax(BSTNode<T> theRoot) {
 		while(theRoot.getRight() != null) {
@@ -113,6 +154,21 @@ public class BSTree<T extends Comparable<T>> {
 		}
 		return theRoot.getElement();
 	}
+	
+	/**
+	 * Recursive version to find node with greatest element for a 
+	 * given subtree root node
+	 * @param theRoot {@link BSTNode} current subtree root
+	 * @return {@link T} maximum element from subtree
+	 */
+	private T getMaxRec(BSTNode<T> theRoot) {
+		if(theRoot.getRight() != null) {
+			return getMaxRec(theRoot.getRight());
+		} else {
+			return theRoot.getElement();
+		}
+	}
+	
 
 	public void setRoot(BSTNode<T> root) {
         this.root = root;
@@ -129,6 +185,12 @@ public class BSTree<T extends Comparable<T>> {
         return aux;
     }
     
+    /**
+     * Returns the representation of the BSTree in a String
+     * with the Pre-Order notation
+     * @param theRoot
+     * @return
+     */
     private String toString(BSTNode<T> theRoot) {
         String aux = "";
 
