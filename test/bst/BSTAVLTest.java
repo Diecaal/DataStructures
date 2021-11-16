@@ -53,32 +53,32 @@ public class BSTAVLTest {
 		assertEquals ("b(3)-c(2)-i(1)h(0)---", a.toString());
 	}	
 	
-	@Test
-	public void test_B() {
-	
-		// Example
-		BSTree<Character> a = new BSTree<Character>();
-		a.add('b');
-		a.add('a');
-		a.add('d');
-		a.add('c');
-		a.add('g');
-		a.add('i');
-		a.add('h');
-		assertEquals ("ba--dc--g-ih---", a.toString());
-	
-		// Scenery III
-		a.remove('d');
-		assertEquals ("ba--c-g-ih---", a.toString());
-		
-		// Scenery II
-		a.remove('g');
-		assertEquals ("ba--c-ih---", a.toString());
-				
-		// Scenery I
-		a.remove('a');
-		assertEquals ("b-c-ih---", a.toString());
-	}
+//	@Test
+//	public void test_B() {
+//	
+//		// Example
+//		BSTree<Character> a = new BSTree<Character>();
+//		a.add('b');
+//		a.add('a');
+//		a.add('d');
+//		a.add('c');
+//		a.add('g');
+//		a.add('i');
+//		a.add('h');
+//		assertEquals ("ba--dc--g-ih---", a.toString());
+//	
+//		// Scenery III
+//		a.remove('d');
+//		assertEquals ("ba--c-g-ih---", a.toString());
+//		
+//		// Scenery II
+//		a.remove('g');
+//		assertEquals ("ba--c-ih---", a.toString());
+//				
+//		// Scenery I
+//		a.remove('a');
+//		assertEquals ("b-c-ih---", a.toString());
+//	}
 	
 	
 	@Test
