@@ -25,7 +25,7 @@ public class Graph<T> {
 	ArrayList<GraphNode<T>> nodes;
 	protected boolean[][] edges;
 	protected double[][] weight;
-
+	private int maximumCapacity;
 	/*-------------- GRAPH --------------*/
 
 	/**
@@ -38,6 +38,7 @@ public class Graph<T> {
 		if (capacity < 0) {
 			throw new IllegalArgumentException("Capacity must be equal/greater zero");
 		}
+		this.maximumCapacity = capacity;
 		nodes = new ArrayList<GraphNode<T>>(capacity);
 		edges = new boolean[capacity][capacity];
 		weight = new double[capacity][capacity];
@@ -73,6 +74,8 @@ public class Graph<T> {
 	 *                   capacity of nodes into the graph is reached
 	 */
 	public void addNode(T element) throws Exception {
+		if(this.maximumCapacity >= getSize()) 
+			throw new ArrayIndexOutOfBoundsException("Maximum graph size reached");
 		if (getNode(element) != INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Element already existing in the graph");
 		nodes.add(new GraphNode<T>(element));
@@ -667,7 +670,9 @@ public class Graph<T> {
 			throw new IllegalArgumentException("Origin node does not exist");
 		if (j == INDEX_NOT_FOUND)
 			throw new IllegalArgumentException("Destination node does not exist");
-
+		/* If path between origin and destination does not exist we only return the origin */
+		if(P[i][j] == INDEX_NOT_FOUND) 
+			return origin.toString();
 		int k = P[i][j];
 
 		String path = String.format("%s-", origin.toString());
