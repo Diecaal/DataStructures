@@ -334,38 +334,38 @@ public class AVLTest {
 
 		System.out.println(ti.toString());
 		assertEquals("10(-1)6(-1)3(-1)2(-1)1(0)---4(0)--9(-1)7(0)---15(-1)14(-1)12(0)---20(0)--", ti.toString());
-//	    assertEquals (5, ti.getHeight());
+	    assertEquals (5, ti.getHeight());
 
 
 		ti.remove(20);
 		System.out.println("DELETE 20 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("6(0)3(-1)2(-1)1(0)---4(0)--10(0)9(-1)7(0)---14(0)12(0)--15(0)--", ti.toString());
-//	    assertEquals (4, ti.getHeight());
+	    assertEquals (4, ti.getHeight());
 
 		ti.remove(4);
 		System.out.println("DELETE 4 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("6(1)2(0)1(0)--3(0)--10(0)9(-1)7(0)---14(0)12(0)--15(0)--", ti.toString());
-//	    assertEquals (4, ti.getHeight());
+	    assertEquals (4, ti.getHeight());
 
 		ti.remove(10);
 		System.out.println("DELETE 10 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("6(1)2(0)1(0)--3(0)--9(1)7(0)--14(0)12(0)--15(0)--", ti.toString());
-//	    assertEquals (4, ti.geteight());
+	    assertEquals (4, ti.getHeight());
 
 		ti.remove(9);
 		System.out.println("DELETE 9 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("6(1)2(0)1(0)--3(0)--14(-1)7(1)-12(0)--15(0)--", ti.toString());
-//	    assertEquals (4, ti.getHeight());
+	    assertEquals (4, ti.getHeight());
 
 		ti.remove(6);
 		System.out.println("DELETE 6 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("3(1)2(-1)1(0)---14(-1)7(1)-12(0)--15(0)--", ti.toString());
-//	    assertEquals (4, ti.getHeight());
+	    assertEquals (4, ti.getHeight());
 
 		ti.remove(3);
 		System.out.println("DELETE 3 -> " + ti.toString() + " *** " + ti.toString());
 		assertEquals("7(0)2(-1)1(0)---14(0)12(0)--15(0)--", ti.toString());
-//	    assertEquals (3, ti.getHeight());
+	    assertEquals (3, ti.getHeight());
 
 	}
 

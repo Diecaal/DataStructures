@@ -13,6 +13,9 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @param element
 	 */
 	public void add(T element) {
+		if(search(element))
+			throw new IllegalArgumentException("Given element already exist in the tree");
+		
 		root = add(element, root);
 	}
 
@@ -89,6 +92,9 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return {@link AVLNode} node removed
 	 */
 	public void remove(T element) {
+		if(!search(element))
+			throw new IllegalArgumentException("Given element does not exist in the tree");
+		
 		root = remove(root, element);
 	}
 
@@ -240,22 +246,10 @@ public class AVLTree<T extends Comparable<T>> {
 		if(theRoot == null) {
 			return 0;
 		}
-		return getHeightRec(theRoot) + 1;
-	}
-
-	private int getHeight(AVLNode<T> theRoot) {
-		if(theRoot == null) {
-			return 0;
-		}
-			
-		int a = getHeight(theRoot.getLeft());
-		int b = getHeight(theRoot.getRight());
+		int left = getHeightRec(theRoot.getLeft()) + 1;
+		int right = getHeightRec(theRoot.getRight()) + 1;
 		
-		if(a >= b) {
-			return getHeight(theRoot.getLeft()) + 1;
-		} else {
-			return getHeight(theRoot.getRight()) + 1;
-		}
+		return left > right ? left : right;
 	}
 
 	/**
