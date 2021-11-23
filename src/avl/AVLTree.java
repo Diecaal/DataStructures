@@ -109,7 +109,7 @@ public class AVLTree<T extends Comparable<T>> {
 		if (element == null)
 			throw new IllegalArgumentException("Element to be removed can not be null");
 		/*
-		 * Recursive calls iterating throught the BSTree until node with given element
+		 * Recursive calls iterating through the BSTree until node with given element
 		 * is found
 		 */
 		if (element.compareTo(theRoot.getElement()) < 0) {
@@ -154,19 +154,19 @@ public class AVLTree<T extends Comparable<T>> {
 			if (theRoot.getLeft().getBF() == 1) {
 				theRoot = doubleLeftRotation(theRoot);
 			}
-			// single left rotation required
-			else if (theRoot.getLeft().getBF() == -1) {
+			// single left rotation required (with 0 values as well)
+			if (theRoot.getLeft().getBF() == -1 || theRoot.getLeft().getBF() == 0) {
 				theRoot = singleLeftRotation(theRoot);
 			}
 		}
 		// right rotation required
-		else if (theRoot.getBF() == 2) {
-			// single right rotation required
-			if (theRoot.getRight().getBF() == 1) {
+		if (theRoot.getBF() == 2) {
+			// single right rotation required (with 0 values as well)
+			if (theRoot.getRight().getBF() == 1 || theRoot.getRight().getBF() == 0) {
 				theRoot = singleRightRotation(theRoot);
 			}
 			// double right rotation required
-			else if (theRoot.getRight().getBF() == -1) {
+			if (theRoot.getRight().getBF() == -1) {
 				theRoot = doubleRightRotation(theRoot);
 			}
 		}
@@ -233,7 +233,14 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return
 	 */
 	public int getHeight() {
-		return getHeight(root);
+		return getHeightRec(root);
+	}
+
+	private int getHeightRec(AVLNode<T> theRoot) {
+		if(theRoot == null) {
+			return 0;
+		}
+		return getHeightRec(theRoot) + 1;
 	}
 
 	private int getHeight(AVLNode<T> theRoot) {
