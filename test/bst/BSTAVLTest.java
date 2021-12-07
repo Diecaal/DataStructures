@@ -53,6 +53,7 @@ public class BSTAVLTest {
 		assertEquals ("b(3)-c(2)-i(1)h(0)---", a.toString());
 	}	
 	
+// INCORRECT OUTPUT PATTERN TEST
 //	@Test
 //	public void test_B() {
 //	

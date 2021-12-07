@@ -13,6 +13,7 @@ public class BinaryHeapTest {
 		 Integer[] input = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 		 BinaryHeap<Integer> a = new BinaryHeap<Integer>(input);
 		 
+		 System.out.println("---" + a.toString());
 		 assertEquals(a.toString(),("[1, 2, 4, 3, 6, 5, 8, 10, 7, 9]"));
 	}
 	
