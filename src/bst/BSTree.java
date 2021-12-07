@@ -12,6 +12,11 @@ public class BSTree<T extends Comparable<T>> {
 	 * @param element
 	 */
     public void add(T element) {
+    	if(element == null)
+			throw new IllegalArgumentException("Element can not be null");
+    	if (search(element))
+			throw new IllegalArgumentException("Given element already exist in the tree");
+    	
         root = add(element, root);
     }
     
@@ -52,6 +57,8 @@ public class BSTree<T extends Comparable<T>> {
      * @return
      */
     public boolean search(T element) {
+    	if(element == null)
+			throw new IllegalArgumentException("Element can not be null");
         return search(root, element);
     }
 
@@ -84,8 +91,12 @@ public class BSTree<T extends Comparable<T>> {
      * @param element {@link T} to be removed
      * @return {@link BSTNode} node removed
      */
-    public BSTNode<T> remove(T element) {
-    	return remove(root, element);
+    public void remove(T element) {
+    	if(element == null)
+			throw new IllegalArgumentException("Element to be removed can not be null");
+		if (!search(element))
+			throw new IllegalArgumentException("Given element does not exist in the tree");
+		root = remove(root, element);
     }
     
     /**
@@ -169,7 +180,33 @@ public class BSTree<T extends Comparable<T>> {
 		}
 	}
 	
+	/**
+	 * RECURSIVE method to obtain the height of a tree without using nodes height
+	 * attribute
+	 * 
+	 * @return
+	 */
+	public int getHeight() {
+		return getHeightRec(root);
+	}
 
+	/**
+	 * Recursive call of method to obtain the height of the sub-tree whose root is
+	 * theRoot
+	 * 
+	 * @param theRoot
+	 * @return
+	 */
+	private int getHeightRec(BSTNode<T> theRoot) {
+		if (theRoot == null) {
+			return 0;
+		}
+		int left = getHeightRec(theRoot.getLeft()) + 1;
+		int right = getHeightRec(theRoot.getRight()) + 1;
+
+		return left > right ? left : right;
+	}
+	
 	public void setRoot(BSTNode<T> root) {
         this.root = root;
     }

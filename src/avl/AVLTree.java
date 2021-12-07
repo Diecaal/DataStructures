@@ -13,6 +13,8 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @param element
 	 */
 	public void add(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Element to be added can not be null");
 		if (search(element))
 			throw new IllegalArgumentException("Given element already exist in the tree");
 
@@ -57,6 +59,8 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return
 	 */
 	public boolean search(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Element to be searched can not be null");
 		return search(root, element);
 	}
 
@@ -92,6 +96,8 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return {@link AVLNode} node removed
 	 */
 	public void remove(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Element to be removed can not be null");
 		if (!search(element))
 			throw new IllegalArgumentException("Given element does not exist in the tree");
 

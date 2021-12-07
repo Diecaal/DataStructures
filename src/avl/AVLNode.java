@@ -8,12 +8,16 @@ public class AVLNode<T extends Comparable<T>> {
 	private int height;
 
 	public AVLNode(T element, AVLNode<T> left, AVLNode<T> right) {
+		if(element == null)
+			throw new IllegalArgumentException("Element can not be null");
 		this.element = element;
 		this.left = left;
 		this.right = right;
 	}
 
 	public AVLNode(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Element can not be null");
 		this.element = element;
 	}
 
@@ -26,6 +30,8 @@ public class AVLNode<T extends Comparable<T>> {
 	}
 
 	public void setElement(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Element can not be null");
 		this.element = element;
 	}
 
