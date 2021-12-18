@@ -3,6 +3,7 @@ package hash.hashTable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -186,13 +187,13 @@ public class HashTest {
 				a.toString());
 		try {
 			a.remove(3);
-			//fail();
+			fail();
 		} catch (RuntimeException e) {
 			System.err.println(e.getMessage());
 		}
 		try {
 			a.remove(14);
-			//fail();
+			fail();
 		} catch (RuntimeException e) {
 			System.err.println(e.getMessage());
 		}
@@ -206,5 +207,20 @@ public class HashTest {
 				a.toString());
 
 		assertEquals(0.285, a.getLF(), 0.01);
+	}
+	
+	@Test
+	public void testing() {
+		HashTable<Integer> a = new HashTable<Integer>(10, HashTable.LINEAR_PROBING, 0.5, 0.2);
+		
+		a.add(2);
+		a.add(3);
+		a.add(4);
+		a.add(12);
+		
+		a.remove(3);
+		
+		assertFalse(a.search(3));
+		assertTrue(a.search(12));
 	}
 }

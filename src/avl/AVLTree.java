@@ -1,5 +1,7 @@
 package avl;
 
+import java.util.ArrayList;
+
 public class AVLTree<T extends Comparable<T>> {
 
 	/**
@@ -13,7 +15,7 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @param element
 	 */
 	public void add(T element) {
-		if(element == null)
+		if (element == null)
 			throw new IllegalArgumentException("Element to be added can not be null");
 		if (search(element))
 			throw new IllegalArgumentException("Given element already exist in the tree");
@@ -59,7 +61,7 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return
 	 */
 	public boolean search(T element) {
-		if(element == null)
+		if (element == null)
 			throw new IllegalArgumentException("Element to be searched can not be null");
 		return search(root, element);
 	}
@@ -96,7 +98,7 @@ public class AVLTree<T extends Comparable<T>> {
 	 * @return {@link AVLNode} node removed
 	 */
 	public void remove(T element) {
-		if(element == null)
+		if (element == null)
 			throw new IllegalArgumentException("Element to be removed can not be null");
 		if (!search(element))
 			throw new IllegalArgumentException("Given element does not exist in the tree");
@@ -198,81 +200,111 @@ public class AVLTree<T extends Comparable<T>> {
 	/**
 	 * Performs a double right rotation over the subtree whose root is theRoot.
 	 * 
-	 * @param theRoot
+	 *  		a (2)                 c 
+	 * 			 \                   / \
+	 *			  b (-1)    ->      a   b
+	 * 			 /
+	 * 			c (0)
+	 * 
+	  * @param theRoot expressed as (a) node
 	 * @return {@link AVLNode} new root of rotated subtree
 	 */
 	private AVLNode<T> doubleRightRotation(AVLNode<T> theRoot) {
-		AVLNode<T> newRoot = theRoot.getRight().getLeft();
-		AVLNode<T> newRootRightChild = theRoot.getRight();
+		AVLNode<T> a = theRoot;
+		AVLNode<T> c = a.getRight().getLeft();
+		AVLNode<T> b = a.getRight();
 
-		newRootRightChild.setLeft(newRoot.getRight());
-		theRoot.setRight(newRoot.getLeft());
-		newRoot.setLeft(theRoot);
-		newRoot.setRight(newRootRightChild);
+		b.setLeft(c.getRight());
+		a.setRight(c.getLeft());
+		c.setLeft(a);
+		c.setRight(b);
 
 		// We need to update the height of the nodes whose height has changed
-		newRootRightChild.updateHeight();
-		theRoot.updateHeight();
-		newRoot.updateHeight();
-		return newRoot;
+		b.updateHeight();
+		a.updateHeight();
+		c.updateHeight();
+		
+		return c;
 	}
 
 	/**
 	 * Performs a double left rotation over the subtree whose root is theRoot.
 	 * 
-	 * @param theRoot
+	 *  		a (-2)                      
+	 * 		   /                     c
+	 *		  b (1)       ->        / \
+	 * 		   \                   b   a
+	 * 			c (0)
+	 * 
+	  * @param theRoot expressed as (a) node
 	 * @return {@link AVLNode} new root of rotated subtree
 	 */
 	private AVLNode<T> doubleLeftRotation(AVLNode<T> theRoot) {
-		AVLNode<T> newRoot = theRoot.getLeft().getRight();
-		AVLNode<T> newRootLeftChild = theRoot.getLeft();
+		AVLNode<T> a = theRoot;
+		AVLNode<T> c = a.getLeft().getRight();
+		AVLNode<T> b = a.getLeft();
 
-		newRootLeftChild.setRight(newRoot.getLeft());
-		theRoot.setLeft(newRoot.getRight());
-		newRoot.setLeft(newRootLeftChild);
-		newRoot.setRight(theRoot);
+		b.setRight(c.getLeft());
+		a.setLeft(c.getRight());
+		c.setLeft(b);
+		c.setRight(a);
 
 		// We need to update the height of the nodes whose height has changed
-		newRootLeftChild.updateHeight();
-		theRoot.updateHeight();
-		newRoot.updateHeight();
-		return newRoot;
+		b.updateHeight();
+		a.updateHeight();
+		c.updateHeight();
+		return c;
 	}
 
 	/**
 	 * Performs a single right rotation over the subtree whose root is theRoot.
 	 * 
-	 * @param theRoot
+	 *  		a (2)                   b 
+	 * 			 \                     / \
+	 *			  b (1|0)    ->       a   c
+	 * 			   \
+	 * 				c (0)
+	 * 
+	 * @param theRoot expressed as (a) node
 	 * @return {@link AVLNode} new root of rotated subtree
 	 */
 	private AVLNode<T> singleRightRotation(AVLNode<T> theRoot) {
-		AVLNode<T> newRoot = theRoot.getRight();
+		AVLNode<T> a = theRoot;
+		AVLNode<T> b = a.getRight();
 
-		theRoot.setRight(newRoot.getLeft());
-		newRoot.setLeft(theRoot);
+		a.setRight(b.getLeft());
+		b.setLeft(a);
 
 		// We need to update the height of the nodes whose height has changed
-		theRoot.updateHeight();
-		newRoot.updateHeight();
-		return newRoot;
+		a.updateHeight();
+		b.updateHeight();
+		
+		return b;
 	}
 
 	/**
 	 * Performs a single left rotation over the subtree whose root is theRoot.
 	 * 
-	 * @param theRoot
+	 *  		a (-2)              b 
+	 * 		   /                   / \
+	 *		  b (-1|0)    ->      c   a
+	 * 	     /
+	 * 	    c (0)
+	 * 
+	 * @param theRoot expressed as (a) node
 	 * @return {@link AVLNode} new root of rotated subtree
 	 */
 	private AVLNode<T> singleLeftRotation(AVLNode<T> theRoot) {
-		AVLNode<T> newRoot = theRoot.getLeft();
+		AVLNode<T> a = theRoot;
+		AVLNode<T> b = theRoot.getLeft();
 
-		theRoot.setLeft(newRoot.getRight());
-		newRoot.setRight(theRoot);
+		a.setLeft(b.getRight());
+		b.setRight(a);
 
 		// We need to update the height of the nodes whose height has changed
-		theRoot.updateHeight();
-		newRoot.updateHeight();
-		return newRoot;
+		a.updateHeight();
+		b.updateHeight();
+		return b;
 	}
 
 	/**
@@ -299,7 +331,7 @@ public class AVLTree<T extends Comparable<T>> {
 		int left = getHeightRec(theRoot.getLeft()) + 1;
 		int right = getHeightRec(theRoot.getRight()) + 1;
 
-		return left > right ? left : right;
+		return (left > right) ? left : right;
 	}
 
 	/**
@@ -331,6 +363,105 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 	}
 
+	public T getBrother(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Null elements not valid");
+		if(!search(element))
+			throw new IllegalArgumentException("Element not existing in the tree");
+		// Root node does not have any parent
+		if(root.getElement().equals(element)) 
+			return null;
+				
+		AVLNode<T> parent = getParentNode(root, element);
+		if(parent.getRight() == null || parent.getLeft() == null) 
+			return null;
+		if(parent.getRight().getElement().equals(element))
+			return parent.getLeft().getElement();
+		else
+			return parent.getRight().getElement();
+	}
+	
+	public AVLNode<T> getParentNode(T element) {
+		if(element == null)
+			throw new IllegalArgumentException("Null elements not valid");
+		if(!search(element))
+			throw new IllegalArgumentException("Element not existing in the tree");
+		// Root node does not have any parent
+		if(root.getElement().equals(element)) 
+			return null;
+		
+		return getParentNode(root, element);
+	}
+	
+	private AVLNode<T> getParentNode(AVLNode<T> theRoot, T element) {
+		AVLNode<T> node = null;
+		if(theRoot != null) {
+			// Right children is the element we are looking for
+			if(theRoot.getRight() != null && theRoot.getRight().getElement().equals(element))
+				return theRoot;
+			// Left children is the element we are looking for
+			if(theRoot.getLeft() != null && theRoot.getLeft().getElement().equals(element))
+				return theRoot;
+			
+			// Otherwise keep recursively searching
+			node = getParentNode(theRoot.getLeft(), element);
+			
+			if(node == null) // Left search failed
+				node = getParentNode(theRoot.getRight(), element);			
+		}
+		
+		return node;
+	}
+	
+	/** RECURSIRVE APPROACH TO GET THE BALANCE FACTOR MEAN IN THE TREE **/
+
+	/**
+	 * Method calling two recursive methods. First one will get the sum of all BFs
+	 * in the tree and second one will get the number of nodes in the tree
+	 * 
+	 * @return Balance Factor average in the tree
+	 */
+	public double getBFMean() {
+		if (root == null)
+			return 0;
+
+		return getBFMeanRec(root) / getNumberOfNodes();
+	}
+
+	private double getBFMeanRec(AVLNode<T> theRoot) {
+		if (theRoot == null)
+			return 0;
+
+		double currentBFMean = theRoot.getBF();
+		currentBFMean += getBFMeanRec(theRoot.getLeft());
+		currentBFMean += getBFMeanRec(theRoot.getRight());
+
+		return currentBFMean;
+	}
+
+	/**
+	 * Method calling a recursive method to retrieve the number of nodes in the tree
+	 * 
+	 * @return number of nodes in the tree
+	 */
+	public int getNumberOfNodes() {
+		return getNumberOfNodesRec(root);
+	}
+
+	private int getNumberOfNodesRec(AVLNode<T> theRoot) {
+		if (theRoot == null)
+			return 0;
+
+		// Retrieve the number of nodes from left sub tree
+		int numberOfNodes = getNumberOfNodesRec(theRoot.getLeft());
+		// Retrieve the number of nodes from right sub tree
+		numberOfNodes += getNumberOfNodesRec(theRoot.getRight());
+		// Add current node
+		numberOfNodes++;
+
+		return numberOfNodes;
+	}
+
 	public void setRoot(AVLNode<T> root) {
 		this.root = root;
 	}
@@ -347,8 +478,8 @@ public class AVLTree<T extends Comparable<T>> {
 	}
 
 	/**
-	 * Returns the representation of the BSTree in a String with the Pre-Order
-	 * notation
+	 * Returns the representation of the subtree for a given root. PREORDER notation
+	 * is being used
 	 * 
 	 * @param theRoot
 	 * @return
@@ -359,13 +490,40 @@ public class AVLTree<T extends Comparable<T>> {
 		if (theRoot == null) {
 			return "-";
 		}
-
 		aux += theRoot.toString();
-
 		aux += toString(theRoot.getLeft());
-
 		aux += toString(theRoot.getRight());
 
 		return aux;
+	}
+
+	/** UTIL METHODS **/
+
+	/**
+	 * Given a root node, return the elements of its subtree with PREORDER notation
+	 * 
+	 * @param theRoot
+	 * @param arr
+	 */
+	void treeToArrayPreOrder(AVLNode<T> theRoot, ArrayList<AVLNode<T>> arr) {
+		if (theRoot != null) {
+			arr.add(theRoot);
+			treeToArrayPreOrder(theRoot.getLeft(), arr);
+			treeToArrayPreOrder(theRoot.getRight(), arr);	
+		}
+	}
+
+	/**
+	 * Given a root node, return the elements of its subtree with INORDER notation
+	 * 
+	 * @param theRoot
+	 * @param arr
+	 */
+	void treeToArrayInOrder(AVLNode<T> theRoot, ArrayList<AVLNode<T>> arr) {
+		if (theRoot != null) {
+			treeToArrayInOrder(theRoot.getLeft(), arr);
+			arr.add(theRoot);
+			treeToArrayInOrder(theRoot.getRight(), arr);	
+		}
 	}
 }

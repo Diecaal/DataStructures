@@ -212,8 +212,10 @@ public class HashMap<K, V> {
 	public String toString() {
 		String str = "";
 		for(int i = 0; i < B; i++) {
-			str += String.format("[Key: %s] (Status: %s) Value: %s - ", 
-					associativeArray.get(i).getKey(), associativeArray.get(i).getStatus(), associativeArray.get(i).getValue());
+			str += String.format("[%s] (%s) = %s : %s - ", i, 
+					associativeArray.get(i).getStatus(), 
+					associativeArray.get(i).getKey(),
+					associativeArray.get(i).getValue());
 		}
 		return str;
 	}	

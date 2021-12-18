@@ -1,6 +1,7 @@
 package avl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 public class AVLTest {
@@ -414,6 +415,141 @@ public class AVLTest {
 		a.add('c');
 		assertEquals("b(1)a(0)--d(-1)c(0)---", a.toString());
 
+	}
+	
+	@Test
+	public void test_meanBalanceFactor() {
+		
+		AVLTree<Integer> ti = new AVLTree<Integer>();
+
+		ti.add(10);
+		ti.add(6);
+		ti.add(15);
+		ti.add(3);
+		ti.add(9);
+		ti.add(14);
+		ti.add(20);
+		ti.add(2);
+		ti.add(4);
+		ti.add(7);
+		ti.add(12);
+		ti.add(1);
+
+		System.out.println(ti.toString());
+		assertEquals("10(-1)6(-1)3(-1)2(-1)1(0)---4(0)--9(-1)7(0)---15(-1)14(-1)12(0)---20(0)--", ti.toString());
+	    assertEquals (5, ti.getHeight());
+	    
+	    assertEquals (12, ti.getNumberOfNodes());
+	    assertEquals (-0.58, ti.getBFMean(), 0.1);
+	    
+	    ti = new AVLTree<Integer>();
+
+		ti.add(7);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("7(0)--", ti.toString());
+
+		ti.add(6);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("7(-1)6(0)---", ti.toString());
+
+		ti.add(5);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("6(0)5(0)--7(0)--", ti.toString());
+
+		ti.add(4);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("6(-1)5(-1)4(0)---7(0)--", ti.toString());
+
+		assertEquals (4, ti.getNumberOfNodes());
+	    assertEquals (-0.5, ti.getBFMean(), 0.1);
+	    
+		ti.add(3);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("6(-1)4(0)3(0)--5(0)--7(0)--", ti.toString());
+
+		ti.add(2);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("4(0)3(-1)2(0)---6(0)5(0)--7(0)--", ti.toString());
+		
+		assertEquals (6, ti.getNumberOfNodes());
+	    assertEquals (-0.16, ti.getBFMean(), 0.1);
+
+		ti.add(1);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("4(0)2(0)1(0)--3(0)--6(0)5(0)--7(0)--", ti.toString());
+
+		ti.add(8);
+		System.out.println(ti.toString());
+		System.out.println(ti.toString());
+		assertEquals("4(1)2(0)1(0)--3(0)--6(1)5(0)--7(1)-8(0)--", ti.toString());
+
+		ti.add(9);
+		System.out.println("9 -> " + ti.toString() + ti.toString());
+		assertEquals("4(1)2(0)1(0)--3(0)--6(1)5(0)--8(0)7(0)--9(0)--", ti.toString());
+		
+		assertEquals (9, ti.getNumberOfNodes());
+	    assertEquals (0.22, ti.getBFMean(), 0.1);
+	}
+	
+	@Test
+	public void test_parent_and_brother() {
+		
+		AVLTree<Integer> ti = new AVLTree<Integer>();
+
+		ti.add(7);
+		System.out.println(ti.toString());
+		assertEquals("7(0)--", ti.toString());
+
+		ti.add(6);
+		System.out.println(ti.toString());
+		assertEquals("7(-1)6(0)---", ti.toString());
+
+		ti.add(5);
+		System.out.println(ti.toString());
+		assertEquals("6(0)5(0)--7(0)--", ti.toString());
+
+		ti.add(4);
+		System.out.println(ti.toString());
+		assertEquals("6(-1)5(-1)4(0)---7(0)--", ti.toString());
+
+		ti.add(3);
+		System.out.println(ti.toString());
+		assertEquals("6(-1)4(0)3(0)--5(0)--7(0)--", ti.toString());
+
+		ti.add(2);
+		System.out.println(ti.toString());
+		assertEquals("4(0)3(-1)2(0)---6(0)5(0)--7(0)--", ti.toString());
+		
+		/*
+		 *  Tree obtained for testing:
+		 *  
+		 *      4
+		 * 	   / \
+		 *    3   6
+ 		 *   /   / \
+ 		 *  2   5   7  
+ 		 *  
+		 */
+		// PARENTS
+		assertEquals( 4, (int) ti.getParentNode(6).getElement() );
+		assertEquals( 6, (int) ti.getParentNode(7).getElement() );
+		assertEquals( 6, (int) ti.getParentNode(5).getElement() );
+		assertEquals( 3, (int) ti.getParentNode(2).getElement() );
+		assertEquals( 4, (int) ti.getParentNode(3).getElement() );
+		assertEquals( null, ti.getParentNode(4) );
+		
+		// BROTHERS
+		assertEquals( 5, (int) ti.getBrother(7) );
+		assertEquals( 3, (int) ti.getBrother(6) );
+		assertEquals( null, ti.getBrother(4) );
+		assertEquals( null, ti.getBrother(2));
 	}
 
 }

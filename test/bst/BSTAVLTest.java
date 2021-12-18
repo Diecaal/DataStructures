@@ -20,9 +20,7 @@ public class BSTAVLTest {
 		
 		charTree.add('d');
 		assertEquals ("a(3)-b(2)-c(1)-d(0)--", charTree.toString());
-		
-		
-		
+				
 	}
 	
 	
@@ -100,13 +98,13 @@ public class BSTAVLTest {
 		b.add(8);
 		assertEquals ("7(1)6(0)--8(0)--", b.toString());
 		
-//		assertEquals ("5(3)3(2)1(1)-2(0)---7(0)--", a.joins(a).toString());
-//		assertEquals ("7(1)6(0)--8(0)--", b.joins(b).toString());
-//		
+		assertEquals ("5(3)3(2)1(1)-2(0)---7(0)--", a.joins(a).toString());
+		assertEquals ("7(1)6(0)--8(0)--", b.joins(b).toString());
+	
 //		// At least one must work (ask the student to explain his/her algorithm)
 //		// Depends on the traverse strategy and which tree is used as the pivot
-//		assertEquals ("5(3)3(2)1(1)-2(0)---7(1)6(0)--8(0)--", a.joins(b).toString());
-//		assertEquals ("7(5)6(4)5(3)3(2)1(1)-2(0)-----8(0)--", b.joins(a).toString());
+		assertEquals ("5(3)3(2)1(1)-2(0)---7(1)6(0)--8(0)--", a.joins(b).toString());
+		assertEquals ("7(5)6(4)5(3)3(2)1(1)-2(0)-----8(0)--", b.joins(a).toString());
 	}
 	
 	@Test
@@ -124,7 +122,7 @@ public class BSTAVLTest {
 		b.add('i');
 		b.add('d');
 		assertEquals ("c(2)-g(1)d(0)--i(0)--", b.toString());
-//		assertEquals ("b(3)a(0)--d(2)c(0)--g(1)-i(0)--", a.joins(b).toString());
+		assertEquals ("b(3)a(0)--d(2)c(0)--g(1)-i(0)--", a.joins(b).toString());
 	}
 
 }
