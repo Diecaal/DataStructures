@@ -48,7 +48,7 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 
 		/*
-		 * Acts as a recursive call peforming updateHeight on every single node as add
+		 * Acts as a recursive call performing updateHeight on every single node as add
 		 * is a recursive method
 		 */
 		return updateBF(theRoot);
@@ -155,7 +155,7 @@ public class AVLTree<T extends Comparable<T>> {
 		}
 
 		/*
-		 * Acts as a recursive call peforming updateHeight on every single node as
+		 * Acts as a recursive call performing updateHeight on every single node as
 		 * remove is a recursive method
 		 */
 		return updateBF(theRoot);

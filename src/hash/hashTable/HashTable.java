@@ -17,6 +17,10 @@ public class HashTable<T> {
 	// storing an element)
 	private int validHashNodes;
 
+	// Stores the number of collision in the table for: add, remove and search
+	// methods
+	private int numberOfCollisions = 0;
+
 	/* COLLISION STRATEGIES (REDISPERSION TYPE) in our hash table */
 	public static final int LINEAR_PROBING = 0;
 	public static final int QUADRATIC_PROBING = 1;
@@ -34,6 +38,7 @@ public class HashTable<T> {
 		this.maxLF = maxLF;
 		this.R = getPrevPrimeNumber(B);
 		this.validHashNodes = 0;
+		this.numberOfCollisions = 0;
 	}
 
 	public HashTable(int B, int redispersionType, double maxLF, double minLF) {
@@ -49,16 +54,17 @@ public class HashTable<T> {
 	 * @param element
 	 */
 	public void add(T element) {
-		if(element == null)
+		if (element == null)
 			throw new IllegalArgumentException("Null elements are not allowed");
-		if(search(element))
+		if (search(element))
 			throw new IllegalArgumentException("Element already contained in the hash table");
-		
+
 		int currentAttempt = 0;
 		int f = f(element, currentAttempt);
 		// Change the value of f until we find a free node (NOT valid one)
 		while (associativeArray.get(f).isValid()) {
 			currentAttempt++;
+			numberOfCollisions++;
 			f = f(element, currentAttempt);
 		}
 		associativeArray.set(f, new HashNode<T>(element));
@@ -81,16 +87,16 @@ public class HashTable<T> {
 	 *         otherwise.
 	 */
 	public boolean search(T element) {
-		if(element == null) 
+		if (element == null)
 			throw new IllegalArgumentException("Search of null elements is not allowed");
-		
+
 		boolean elementPresent = false;
 		int currentAttempt = 0;
 		int f = f(element, currentAttempt);
 
 		while (!associativeArray.get(f).isEmpty() && !elementPresent) {
 			// Once attempts exceed B, the search is iterating over all same f values
-			if (currentAttempt >= B)
+			if (currentAttempt > B)
 				break;
 
 			// Only VALID nodes are taken into account
@@ -99,6 +105,7 @@ public class HashTable<T> {
 					elementPresent = true;
 			}
 			currentAttempt++;
+			numberOfCollisions++;
 			f = f(element, currentAttempt);
 		}
 
@@ -108,27 +115,31 @@ public class HashTable<T> {
 	/**
 	 * Given an element it removes it from the table. Setting the hash node
 	 * containing it as deleted. After the removal will determine if a dynamic
-	 * resize is needed if the load factor is lowet than the minimum load factor
+	 * resize is needed if the load factor is lowest than the minimum load factor
 	 * 
 	 * @param element to be removed
 	 */
 	public void remove(T element) {
-		if(!search(element))
+		if (element == null)
+			throw new IllegalArgumentException("Null elements are not allowed");
+		if (!search(element))
 			throw new IllegalArgumentException("Element not contained in the hash table");
-		
+
 		int currentAttempt = 0;
 		int f = f(element, currentAttempt);
 
-		while (associativeArray.get(f).isValid()) {
-			// Once attempts exceed B, the search is iterating over all same f values
-			if (currentAttempt >= B)
+		while (!associativeArray.get(f).isEmpty()) {
+			// Once attempts exceed B, the remove is iterating over all same f values
+			if (currentAttempt > B)
 				break;
-			
+
 			if (associativeArray.get(f).getElement().equals(element)) {
 				associativeArray.get(f).setDeleted();
 				validHashNodes--;
+				break;
 			}
 			currentAttempt++;
+			numberOfCollisions++;
 			f = f(element, currentAttempt);
 		}
 
@@ -193,6 +204,16 @@ public class HashTable<T> {
 				add(oldTable.get(i).getElement());
 			}
 		}
+	}
+
+	/**
+	 * Returns the number of collision that has happened in the hash table during an
+	 * add, remove or search operation
+	 * 
+	 * @return number of collision
+	 */
+	public int getNumberOfCollision() {
+		return this.numberOfCollisions;
 	}
 
 	/* PRIME NUMBERS METHODS */
